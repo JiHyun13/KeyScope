@@ -1,0 +1,63 @@
+body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  font-family: 'Arial', sans-serif;
+  background-color: #d2e0fc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  text-align: center;
+  transform: translateY(-40px);
+}
+
+.title {
+  font-family: 'Gravitas One', cursive;
+  font-size: 36px;
+  margin-bottom: 10px;
+  color: #050044;
+}
+
+.subtitle {
+  font-family: 'Gravitas One', cursive;
+  font-size: 18px;
+  margin-bottom: 40px;
+  color: #404040;
+}
+
+.search-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.search-box {
+  width: 400px;
+  height: 50px;
+  padding: 0 20px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 30px;
+  outline: none;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.search-button {
+  height: 50px;
+  margin-left: 10px;
+  padding: 0 25px;
+  font-size: 16px;
+  border: none;
+  border-radius: 30px;
+  background-color: #afb0fd;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.search-button:hover {
+  background-color: #9798fd;
+}
