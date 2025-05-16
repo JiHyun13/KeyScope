@@ -22,7 +22,7 @@ body {
 }
 
 .subtitle {
-  font-family: 'Noto Sans KR', cursive;
+  font-family: 'Gravitas One', cursive;
   font-size: 18px;
   margin-bottom: 40px;
   color: #404040;
@@ -60,4 +60,37 @@ body {
 
 .search-button:hover {
   background-color: #9798fd;
+}
+
+
+#logo {
+  position: absolute;
+  top: 20px;
+  left: 30px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #001F48;
+  text-decoration: none;
+  z-index: 10;
+}
+
+svg {
+  display: block;
+  margin: 0 auto;
+  background-color: white;
+}
+
+circle {
+  cursor: pointer;
+  transition: stroke 0.3s, stroke-width 0.3s;
+}
+
+circle:hover {
+  stroke: #333;
+  stroke-width: 3px;
+}
+
+text {
+  pointer-events: none;
+  font-size: 14px;
 }

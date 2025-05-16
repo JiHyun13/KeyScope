@@ -15,5 +15,27 @@
       <button class="search-button">검색</button>
     </div>
   </div>
+
+  <script>
+    const searchButton = document.querySelector('.search-button');
+    const searchInput = document.querySelector('.search-box');
+
+    searchButton.addEventListener('click', () => {
+      const keyword = searchInput.value.trim();
+      if (keyword) {
+        // 검색어를 URL 파라미터로 전달하면서 다음 페이지로 이동
+        window.location.href = `map.html?query=${encodeURIComponent(keyword)}`;
+      } else {
+        alert('검색어를 입력해주세요!');
+      }
+    });
+
+    // Enter 키로도 검색 가능하게
+    searchInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        searchButton.click();
+      }
+    });
+  </script>
 </body>
 </html>

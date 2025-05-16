@@ -1,0 +1,101 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background-color: white;
+  position: relative;
+}
+
+#logo {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  font-size: 24px;
+  font-weight: bold;
+  text-decoration: none;
+  color: #001F48;
+}
+
+svg {
+  display: block;
+  margin: 0 auto;
+  background-color: white;
+}
+
+circle {
+  cursor: pointer;
+  transition: stroke 0.2s;
+}
+
+circle:hover {
+  stroke: #000;
+  stroke-width: 2px;
+}
+
+text {
+  pointer-events: none;
+  font-size: 14px;
+  user-select: none;
+}
+
+.center {
+  fill: #001F48;
+}
+
+.primary {
+  fill: #4C4CDC;
+}
+
+.secondary {
+  fill: #D9D9D9;
+}
+
+#backBtn {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  padding: 10px 15px;
+  background-color: #eee;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  font-size: 14px;
+  display: none;
+}
+
+.article-box {
+  position: absolute;
+  top: 300px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 500px;
+  padding: 20px;
+  background: white;
+  border: 2px solid #888;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  z-index: 20;
+}
+
+.article-box h2 {
+  margin-top: 0;
+  font-size: 20px;
+  color: #333;
+  text-align: center;
+}
+
+.article-box ul {
+  list-style: none;
+  padding-left: 0;
+  margin-top: 10px;
+}
+
+.article-box li {
+  font-size: 16px;
+  margin-bottom: 6px;
+  color: #555;
+}
+
+svg#mindmap {
+  width: 100vw;
+  height: 100vh;
+}
