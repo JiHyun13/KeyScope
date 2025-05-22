@@ -123,26 +123,64 @@ function showPopup(keyword) {
   popup.innerHTML = `
     <span class="close" onclick="this.parentElement.remove()" style="position:absolute; top:10px; right:15px; cursor:pointer; font-size:18px;">✖</span>
     <h2>📌 "${keyword}" 관련 기사</h2>
-    <ul id="article-list"><li>불러오는 중...</li></ul>
+    <div id="article-list" style="margin-top: 10px;"></div>
+    <div id="summary-box" style="margin-top:20px; padding:10px; border-top:1px solid #ccc;"></div>
   `;
   document.body.appendChild(popup);
 
-  // ✅ 실제 API 연동 (API 주소 변경 필요)
-  fetch(`https://api.example.com/articles?keyword=${encodeURIComponent(keyword)}`)
-    .then(res => res.json())
-    .then(data => {
-      const list = document.getElementById("article-list");
-      list.innerHTML = "";
-      data.articles.forEach((article, idx) => {
-        const li = document.createElement("li");
-        li.innerHTML = `<input type="checkbox" id="a${idx}"><label for="a${idx}"> ${idx + 1}. ${article.title}</label>`;
-        list.appendChild(li);
-      });
-    })
-    .catch(() => {
-      document.getElementById("article-list").innerHTML = "<li>기사 불러오기 실패</li>";
+  // 예시 기사 데이터
+  const mockArticles = [
+    {
+      title: `${keyword} 관련 뉴스 1`,
+      description: `${keyword}에 대한 기사 요약 내용입니다. 주요 내용이 여기에 표시됩니다. 주요 내용이 여기에 표시됩니다. 주요 내용이 여기에 표시됩니다. 주요 내용이 여기에 표시됩니다. 주요 내용이 여기에 표시됩니다. 주요 내용이 여기에 표시됩니다. 주요 내용이 여기에 표시됩니다. 주요 내용이 여기에 표시됩니다. 주요 내용이 여기에 표시됩니다. 주요 내용이 여기에 표시됩니다. 주요 내용이 여기에 표시됩니다. 주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.`,
+      link: "https://example.com/news1"
+    },
+    {
+      title: `${keyword} 뉴스 속보`,
+      description: `이것은 ${keyword}에 대한 두 번째 기사입니다. 핵심 정보가 들어갑니다.`,
+      link: "https://example.com/news2"
+    },
+    {
+      title: `${keyword} 분석 리포트`,
+      description: `심층 분석된 ${keyword} 기사입니다. 내용이 더 풍부합니다.`,
+      link: "https://example.com/news3"
+    }
+  ];
+
+  const list = document.getElementById("article-list");
+  list.innerHTML = "";
+
+  mockArticles.forEach((article, idx) => {
+    const p = document.createElement("p");
+    p.textContent = `${idx + 1}. ${article.title}`;
+    p.style.cursor = "pointer";
+    p.style.margin = "6px 0";
+    p.style.color = "#007bff";
+    p.style.textDecoration = "underline";
+
+    p.addEventListener("click", () => {
+      document.getElementById("summary-box").innerHTML = `
+        <h3>📰 ${article.title}</h3>
+        <p>${article.description}</p>
+        <a href="${article.link}" target="_blank" style="
+          display:inline-block; 
+          margin-top:10px; 
+          padding:8px 12px; 
+          background:#007bff; 
+          color:white; 
+          text-decoration:none; 
+          border-radius:6px;
+        ">
+          원본 기사 보기
+        </a>
+      `;
     });
+
+    list.appendChild(p);
+  });
 }
+
+
 
 if (!data[initialKeyword]) {
   data[initialKeyword] = { primary: ["1차-A", "1차-B", "1차-C"] };
