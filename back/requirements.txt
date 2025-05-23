@@ -1,3 +1,6 @@
 flask
 requests
 python-dotenv
+supabase
+selenium
+webdriver-manager
