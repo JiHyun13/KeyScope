@@ -62,7 +62,6 @@ body {
   background-color: #9798fd;
 }
 
-
 #logo {
   position: absolute;
   top: 20px;
@@ -93,4 +92,17 @@ circle:hover {
 text {
   pointer-events: none;
   font-size: 14px;
+}
+
+/* ✅ 로딩 애니메이션 텍스트 */
+.loading-text::after {
+  content: "⏳ 로딩 중";
+  animation: dots 1.5s steps(3, end) infinite;
+}
+
+@keyframes dots {
+  0%   { content: "⏳ 로딩 중"; }
+  33%  { content: "⏳ 로딩 중."; }
+  66%  { content: "⏳ 로딩 중.."; }
+  100% { content: "⏳ 로딩 중..."; }
 }
