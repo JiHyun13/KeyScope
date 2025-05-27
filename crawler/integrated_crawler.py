@@ -306,27 +306,271 @@ def crawl_asiae_news(url):
         "body": body,
         "media": "아시아경제"
     }
+    
+def crawl_nocut_news(url):
+    headers = {
+        'User-Agent': 'Mozilla/5.0'
+    }
+
+    response = requests.get(url, headers=headers)
+    if response.status_code != 200:
+        print("❌ 기사 요청 실패:", response.status_code)
+        return None
+
+    soup = BeautifulSoup(response.text, 'html.parser')
+    
+    # 제목 추출
+    title_tag = soup.find('h2')
+    title = title_tag.get_text(strip=True) if title_tag else "제목 없음"
+    
+    body_tag = soup.find('div', id='pnlContent')  # id 속성으로 본문 div를 찾음
+
+    if body_tag:
+        for br in body_tag.find_all("br"):
+            br.replace_with("")  # br 태그 삭제, 줄바꿈 없이 이어붙임
+
+        raw_text = body_tag.get_text(strip=True)
+        # 불필요한 빈 줄 제거 및 공백 정리
+        body_lines = [line.strip() for line in raw_text.split("\n") if line.strip()]
+        body = "\n".join(body_lines)
+    else:
+        body = "본문 없음"
+
+    return {
+        "title": title,
+        "url": url,
+        "body": body,
+        "media": "노컷뉴스"
+    }
+    
+def crawl_edaily_news(url):
+    headers = {
+        'User-Agent': 'Mozilla/5.0'
+    }
+
+    response = requests.get(url, headers=headers)
+    if response.status_code != 200:
+        print("❌ 기사 요청 실패:", response.status_code)
+        return None
+
+    soup = BeautifulSoup(response.text, 'html.parser')
+    
+    # 제목 추출
+    title_tag = soup.find('h1')
+    title = title_tag.get_text(strip=True) if title_tag else "제목 없음"
+    
+    body_tag = soup.find('div', class_='news_body', itemprop='articleBody')
+
+    if body_tag:
+    # 부수 요소 제거
+        for tag_to_remove in body_tag.find_all(['table', 'div'], class_=['gg_textshow']):
+            tag_to_remove.decompose()  # 태그 자체 삭제
+
+    # <br> 태그는 줄바꿈 문자로 변환
+        for br in body_tag.find_all("br"):
+            br.replace_with("\n")
+
+        raw_text = body_tag.get_text(separator="\n", strip=True)
+
+    # 빈 줄 제거 및 공백 정리
+        body_lines = [line.strip() for line in raw_text.split("\n") if line.strip()]
+        body = "\n".join(body_lines)
+        
+        body = body.replace('\n', '').replace('\r', '')
+    else:
+        body = "본문 없음"
+
+    return {
+        "title": title,
+        "url": url,
+        "body": body,
+        "media": "이데일리"
+    }
+    
+#경인일보 크롤링 함수
+def crawl_kyeongin_news(url):
+    headers = {
+        'User-Agent': 'Mozilla/5.0'
+    }
+
+    response = requests.get(url, headers=headers)
+    if response.status_code != 200:
+        print("❌ 기사 요청 실패:", response.status_code)
+        return None
+
+    soup = BeautifulSoup(response.text, 'html.parser')
+    
+    # 제목 추출
+    title_tag = soup.find('h1')
+    title = title_tag.get_text(strip=True) if title_tag else "제목 없음"
+    
+    body_tag = soup.find('div', class_='article-body')  # 혹은 id='article-body'
+
+    if body_tag:
+        # 광고용 div 등 불필요한 요소 제거: id가 'svcad_'로 시작하는 div 제거
+        for ad_div in body_tag.find_all('div'):
+            if ad_div.get('id') and ad_div['id'].startswith('svcad_'):
+                ad_div.decompose()
+
+        # table, 특정 클래스 div 제거 (필요시 추가)
+        for tag_to_remove in body_tag.find_all(['table', 'div'], class_=['gg_textshow']):
+            tag_to_remove.decompose()
+
+        # <br> 태그를 줄바꿈으로 변환
+        for br in body_tag.find_all('br'):
+            br.replace_with('\n')
+
+        raw_text = body_tag.get_text(separator='\n', strip=True)
+
+        # 빈 줄 제거 및 공백 정리
+        body_lines = [line.strip() for line in raw_text.split("\n") if line.strip()]
+        body = "\n".join(body_lines)
+        
+        body = body.replace('\n', '').replace('\r', '')
+
+    else:
+        body = "본문 없음"
+   
+    return {
+        "title": title,
+        "url": url,
+        "body": body,
+        "media": "경인일보"
+    }
+
+def crawl_seoul_news(url):
+    headers = {
+        'User-Agent': 'Mozilla/5.0'
+    }
+
+    response = requests.get(url, headers=headers)
+
+    # 인코딩 강제 지정 (utf-8 또는 euc-kr 둘 중 하나 시도)
+    response.encoding = 'utf-8'  # 또는 'euc-kr'
+
+    if response.status_code != 200:
+        print("❌ 기사 요청 실패:", response.status_code)
+        return None
+
+    soup = BeautifulSoup(response.text, 'html.parser')
+    
+    # 제목 추출
+    title_tag = soup.find('h1')
+    title = title_tag.get_text(strip=True) if title_tag else "제목 없음"
+    
+    body_tag = soup.find('div', class_='viewContent body18 color700')
+
+    if body_tag:
+        # 광고 div 제거 (예: id가 svcad_로 시작하는 div)
+        for ad_div in body_tag.find_all('div'):
+            if ad_div.get('id') and ad_div['id'].startswith('svcad_'):
+                ad_div.decompose()
+
+        # 불필요한 태그 제거 (필요 시 추가)
+        for tag_to_remove in body_tag.find_all(['table', 'div'], class_=['gg_textshow']):
+            tag_to_remove.decompose()
+
+        # <br> 태그를 줄바꿈 문자로 대체
+        for br in body_tag.find_all('br'):
+            br.replace_with('\n')
+
+        # 텍스트 추출 및 빈 줄 제거
+        raw_text = body_tag.get_text(separator='\n', strip=True)
+        body_lines = [line.strip() for line in raw_text.split('\n') if line.strip()]
+        body = '\n'.join(body_lines)
+        body = body.replace('\n', '').replace('\r', '')
+
+    else:
+        body = "본문 없음"
+
+    return {
+        "title": title,
+        "url": url,
+        "body": body,
+        "media": "서울신문"
+    }
+    
+def crawl_fn_news(url):
+    headers = {
+        'User-Agent': 'Mozilla/5.0'
+    }
+
+    response = requests.get(url, headers=headers)
+
+# 인코딩 강제 지정 (utf-8 또는 euc-kr 둘 중 하나 시도)
+    response.encoding = 'utf-8'  # 또는 'euc-kr'
+
+    if response.status_code != 200:
+        print("❌ 기사 요청 실패:", response.status_code)
+        return None
+
+    soup = BeautifulSoup(response.text, 'html.parser')
+    
+    # 제목 추출
+    title_tag = soup.find('h1')
+    title = title_tag.get_text(strip=True) if title_tag else "제목 없음"
+    
+    body_tag = soup.find('div', class_='cont_view', id='article_content')
+
+    if body_tag:
+        # 광고 div 제거 (필요 시 조건 추가)
+        for ad_div in body_tag.find_all('div'):
+            if ad_div.get('id') and ad_div['id'].startswith('svcad_'):
+                ad_div.decompose()
+
+        # 부수 요소 제거 (필요하면 더 추가 가능)
+        for tag_to_remove in body_tag.find_all(['table', 'div'], class_=['gg_textshow']):
+            tag_to_remove.decompose()
+
+        # <br> 태그를 줄바꿈 문자로 대체
+        for br in body_tag.find_all('br'):
+            br.replace_with('\n')
+
+        # 텍스트 추출 및 빈 줄 제거
+        raw_text = body_tag.get_text(separator='\n', strip=True)
+        body_lines = [line.strip() for line in raw_text.split('\n') if line.strip()]
+        body = '\n'.join(body_lines)
+        body = body.replace('\n', '').replace('\r', '')
+
+    else:
+        body = "본문 없음"
+
+    return {
+        "title": title,
+        "url": url,
+        "body": body,
+        "media": "파이낸셜뉴스"
+    }
 
 ## -----------------언론사 크롤러 코드 끝!!!! 여기까지 안 건드려도 돼요--------------------
 
 
 # ✅ Supabase 저장 함수 (수정: 'test' 테이블, keyword 컬럼 추가)
-def save_to_supabase(data, keyword):
+def save_to_supabase(data, keyword, log_path="save_log.txt"):
     try:
         # url과 keyword가 같은 데이터가 이미 있는지 확인
         existing = supabase.table("test").select("id").eq("url", data["url"]).eq("keyword", keyword).execute()
         if existing.data:
-            print("⚠️ 이미 저장된 기사:", data["url"])
+            msg = f"⚠️ 이미 저장된 기사: {data['url']}"
+            print(msg)
+            with open(log_path, "a", encoding="utf-8") as f:
+                f.write(msg + "\n")
             return False
 
         data_with_keyword = data.copy()
         data_with_keyword["keyword"] = keyword
 
         supabase.table("test").insert([data_with_keyword]).execute()
-        print("✅ 저장 완료:", data["title"])
+        msg = f"✅ 저장 완료: {data['title']}"
+        print(msg)
+        with open(log_path, "a", encoding="utf-8") as f:
+            f.write(msg + "\n")
         return True
     except Exception as e:
-        print("❌ 저장 실패:", e)
+        msg = f"❌ 저장 실패: {e}"
+        print(msg)
+        with open(log_path, "a", encoding="utf-8") as f:
+            f.write(msg + "\n")
         return False
 
 
@@ -341,6 +585,11 @@ CRAWLER_FUNCTION_MAP = {
     "www.dailian.co.kr" : crawl_dailian_news,
     "www.mk.co.kr" : crawl_mk_news,
     "view.asiae.co.kr" : crawl_asiae_news,
+    "www.nocutnews.co.kr" : crawl_nocut_news,
+    "www.edaily.co.kr" : crawl_edaily_news,
+    "www.kyeongin.com" : crawl_kyeongin_news,
+    "www.seoul.co.kr" : crawl_seoul_news,
+    "www.fnnews.com" : crawl_fn_news,
 }
 
 # 언론사 도메인 → 언론사 이름 매핑
@@ -354,10 +603,18 @@ MEDIA_NAME_MAP = {
     "www.dailian.co.kr" : "데일리안",
     "www.mk.co.kr" : "매일경제",
     "view.asiae.co.kr" : "아시아경제",
+    "www.nocutnews.co.kr" : "노컷뉴스",
+    "www.edaily.co.kr" : "이데일리뉴스",
+    "www.kyeongin.com" : "경인일보",
+    "www.seoul.co.kr" : "서울신문",
+    "www.fnnews.com" : "파이낸셜뉴스",
+
+    
 }
 
-# 네이버 뉴스 수집 및 저장 (수정: keyword 인자 사용)
-def save_articles_from_naver(query):
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
+def save_articles_from_naver_parallel(query, max_workers=10):  # 병렬처리 시도
     client_id = "_TznE38btYhyzWYsq9XK"
     client_secret = "06UYVlSHF9"
 
@@ -383,30 +640,58 @@ def save_articles_from_naver(query):
         if not items:
             break
 
-        for item in items:
-            originallink = item.get("originallink", "")
-            domain = urlparse(originallink).netloc
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            futures = []
 
-            if domain in CRAWLER_FUNCTION_MAP:
-                article = CRAWLER_FUNCTION_MAP[domain](originallink)
+            for item in items:
+                originallink = item.get("originallink", "")
+                domain = urlparse(originallink).netloc
+
+                if domain in CRAWLER_FUNCTION_MAP:
+                    futures.append(executor.submit(CRAWLER_FUNCTION_MAP[domain], originallink))
+                else:
+                    continue
+
+            for future in as_completed(futures):
+                try:
+                    article = future.result()
+                except Exception as e:
+                    print(f"❌ 크롤링 중 예외 발생: {e}")
+                    continue
+
                 if article:
                     success = save_to_supabase(article, query)
                     if success:
+                        domain = urlparse(article["url"]).netloc
                         saved_count_by_domain[domain] += 1
 
         if len(items) < display:
             break
 
+    # 1) 출력
     print("\n✅ 저장 요약")
     for domain, count in saved_count_by_domain.items():
         media = MEDIA_NAME_MAP.get(domain, domain)
         print(f"📰 {media} 기사 총 {count}건 Supabase test 테이블에 저장 완료")
 
+    # 2) 텍스트 파일로 저장
+    filename = f"{query}_news_save_summary.txt"
+    with open(filename, "w", encoding="utf-8") as f:
+        f.write(f"검색어: {query}\n\n")
+        f.write("언론사별 저장 건수 요약:\n")
+        for domain, count in saved_count_by_domain.items():
+            media = MEDIA_NAME_MAP.get(domain, domain)
+            f.write(f"{media}: {count}건\n")
 
-# main 실행부 (input으로 검색어 받음)
+    print(f"\n✅ 저장 요약을 '{filename}' 파일로 저장했습니다.")
+
+# main 실행부 (input으로 검색어 받음)  
 if __name__ == "__main__":
     search_keyword = input("검색어를 입력하세요: ").strip()
     if search_keyword:
-        save_articles_from_naver(search_keyword)
+        start_time = time.time()
+        save_articles_from_naver_parallel(search_keyword)
+        end_time = time.time()
+        print(f"총 실행 시간: {end_time - start_time:.2f}초")
     else:
         print("검색어가 입력되지 않았습니다.")
