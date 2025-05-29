@@ -99,3 +99,18 @@ svg#mindmap {
   width: 100vw;
   height: 100vh;
 }
+
+@keyframes scaleUp {
+  0% {
+    r: 0;
+    opacity: 0;
+  }
+  100% {
+    r: 30;
+    opacity: 1;
+  }
+}
+
+.center-animate {
+  animation: scaleUp 0.4s ease forwards;
+}
