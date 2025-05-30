@@ -160,20 +160,11 @@ function showPopup(keyword) {
 
     p.addEventListener("click", () => {
       document.getElementById("summary-box").innerHTML = `
-        <h3>📰 ${article.title}</h3>
-        <p>${article.description}</p>
-        <a href="${article.link}" target="_blank" style="
-          display:inline-block; 
-          margin-top:10px; 
-          padding:8px 12px; 
-          background:#007bff; 
-          color:white; 
-          text-decoration:none; 
-          border-radius:6px;
-        ">
-          원본 기사 보기
-        </a>
-      `;
+  <h3>📰 ${article.title}</h3>
+  <p>${article.description}</p>
+  <a href="${article.link}" target="_blank" class="view-link">원본 기사 보기</a>
+`;
+
     });
 
     list.appendChild(p);
