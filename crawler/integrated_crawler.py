@@ -6,6 +6,7 @@ from supabase import create_client, Client
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
+from keybert import KeyBERT
 import time
 
 from selenium.webdriver.common.by import By
@@ -544,36 +545,41 @@ def crawl_fn_news(url):
 
 ## -----------------언론사 크롤러 코드 끝!!!! 여기까지 안 건드려도 돼요--------------------
 
-
+kw_model = KeyBERT(model='distiluse-base-multilingual-cased')
 # ✅ Supabase 저장 함수 (수정: 'test' 테이블, keyword 컬럼 추가)
-def save_to_supabase(data, keyword, log_path="save_log.txt"):
+def extract_keywords_with_scores(body, top_n=5):
+    raw = kw_model.extract_keywords(body, top_n=top_n)
+    return [{"keyword": kw, "score": round(score, 4)} for kw, score in raw]
+
+# ✅ Supabase 저장 함수 수정: 'keywords' 포함
+def save_to_supabase(data, query_keyword, log_path="save_log.txt"):
     try:
-        # url과 keyword가 같은 데이터가 이미 있는지 확인
-        existing = supabase.table("test").select("id").eq("url", data["url"]).eq("keyword", keyword).execute()
+        existing = supabase.table("test").select("id").eq("url", data["url"]).eq("query_keyword", query_keyword).execute()
         if existing.data:
-            msg = f"⚠️ 이미 저장된 기사: {data['url']}"
-            print(msg)
-            with open(log_path, "a", encoding="utf-8") as f:
-                f.write(msg + "\n")
+            print(f"⚠️ 이미 저장된 기사: {data['url']}")
             return False
 
-        data_with_keyword = data.copy()
-        data_with_keyword["keyword"] = keyword
+        article_keywords = extract_keywords_with_scores(data["body"], top_n=5)
 
-        supabase.table("test").insert([data_with_keyword]).execute()
-        msg = f"✅ 저장 완료: {data['title']}"
-        print(msg)
-        with open(log_path, "a", encoding="utf-8") as f:
-            f.write(msg + "\n")
+        record = data.copy()
+        record["query_keyword"] = query_keyword
+        record["article_keywords"] = article_keywords  # ✅ jsonb로 저장될 구조
+
+        supabase.table("test").insert([record]).execute()
+        print(f"✅ 저장 완료: {data['title']}")
         return True
+
+    except Exception as e:
+        print(f"❌ 저장 실패: {e}")
+        return False
+
+
     except Exception as e:
         msg = f"❌ 저장 실패: {e}"
         print(msg)
         with open(log_path, "a", encoding="utf-8") as f:
             f.write(msg + "\n")
         return False
-
-
 # 언론사 도메인 → 크롤링 함수 매핑
 CRAWLER_FUNCTION_MAP = {
     "www.yna.co.kr": crawl_yonhap_news,

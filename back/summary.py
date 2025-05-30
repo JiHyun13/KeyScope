@@ -1,9 +1,12 @@
 from flask import Flask, request, jsonify
 import requests
-import os
+import sys, os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 from dotenv import load_dotenv
 from flask_cors import CORS
-from crawler.integrated_crawler import save_articles_from_naver
+from crawler.integrated_crawler import save_articles_from_naver_parallel
 
 load_dotenv()  # env 파일 로드 (토큰 보안 목적)
 
@@ -57,7 +60,7 @@ def crawl():
         return jsonify({"error": "검색어가 비어 있습니다."}), 400
 
     try:
-        save_articles_from_naver(keyword)
+        save_articles_from_naver_parallel(keyword)
         return jsonify({"message": f"'{keyword}'에 대한 기사 수집 완료"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
