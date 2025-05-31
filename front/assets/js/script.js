@@ -19,12 +19,12 @@ searchBtn.addEventListener("click", () => {
   }
 
   // ✅ 기사 수집 요청
-  fetch("http://localhost:5000/crawl", {
+  fetch("http://localhost:5000/crawl", { //엔드포인트에 요청
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ text: keyword })
+    body: JSON.stringify({ text: keyword }) //전달 방식.
   })
-    .then(response => response.json())
+    .then(response => response.json()) //응답을 json으로 파싱
     .then(data => {
       console.log("✅ 기사 수집 결과:", data);
 
@@ -32,9 +32,19 @@ searchBtn.addEventListener("click", () => {
         output.classList.remove("loading-text");
         output.innerText = data.message || `❌ 오류: ${data.error}`;
       }
+      // ✅ 트리 확장 요청(기사 수집 완료 시..)
+      fetch("http://localhost:5000/expand", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: keyword })
+      })
+      .then(res => res.json())
+      .then(data => {
+        sessionStorage.setItem("treeData", JSON.stringify(data.tree));  // ✅ 트리 데이터 저장
+        // ✅ 결과 페이지로 이동
+        window.location.href = `map.html?query=${encodeURIComponent(keyword)}`;
+      });
 
-      // ✅ 결과 페이지로 이동
-      window.location.href = `map.html?query=${encodeURIComponent(keyword)}`;
     })
     .catch(err => {
       console.error("❌ 서버 요청 실패:", err);

@@ -5,26 +5,36 @@ const historyStack = [];
 const params = new URLSearchParams(window.location.search);
 const initialKeyword = params.get("query") || "중심";
 
-const data = {
-  "중심": {
-    primary: ["1차-A", "1차-B", "1차-C"]
-  },
-  "1차-A": {
-    secondary: ["2차 A-1", "2차 A-2"]
-  },
-  "1차-B": {
-    secondary: ["2차 B-1", "2차 B-2"]
-  },
-  "1차-C": {
-    secondary: ["2차 C-1", "2차 C-2", "2차 C-3"]
+// ✅ 트리 데이터 파싱 및 변환
+const rawTree = sessionStorage.getItem("treeData");
+const treeData = rawTree ? JSON.parse(rawTree) : null;
+const data = treeData ? convertTreeToMap(treeData) : {};
+
+function convertTreeToMap(treeNode) {
+  const map = {};
+
+  function traverse(node) {
+    if (!node.children) return;
+
+    const childrenNames = node.children.map(child => child.name);
+    map[node.name] = { primary: childrenNames };
+
+    node.children.forEach(child => {
+      if (child.children && child.children.length > 0) {
+        map[child.name] = { secondary: child.children.map(c => c.name) };
+        traverse(child);
+      }
+    });
   }
-};
+
+  traverse(treeNode);
+  return map;
+}
 
 function renderMap(center) {
   svg.innerHTML = "";
   const cx = window.innerWidth / 2;
   const cy = window.innerHeight / 2;
-
   const centerR = 30;
   drawCircle(cx, cy, centerR, "center", center);
 
@@ -53,7 +63,6 @@ function renderMap(center) {
       const offsetAngle = (offsetStart + j * angleStep2) * Math.PI / 180;
       const sx = x + 140 * Math.cos(offsetAngle);
       const sy = y + 140 * Math.sin(offsetAngle);
-
       drawLine(x, y, sx, sy, "lightgray");
       drawCircle(sx, sy, rSecondary, "secondary", sLabel, () => {
         showPopup(sLabel);
@@ -61,18 +70,15 @@ function renderMap(center) {
     });
   });
 
-  if (secondaries.length > 0) {
-    const angleStep = 360 / secondaries.length;
-    secondaries.forEach((label, i) => {
-      const angle = (angleStep * i - 90) * Math.PI / 180;
-      const x = cx + 220 * Math.cos(angle);
-      const y = cy + 220 * Math.sin(angle);
-      drawLine(cx, cy, x, y, "lightgray");
-      drawCircle(x, y, rSecondary, "secondary", label, () => {
-        showPopup(label);
-      });
+  secondaries.forEach((label, i) => {
+    const angle = (360 / secondaries.length * i - 90) * Math.PI / 180;
+    const x = cx + 220 * Math.cos(angle);
+    const y = cy + 220 * Math.sin(angle);
+    drawLine(cx, cy, x, y, "lightgray");
+    drawCircle(x, y, rSecondary, "secondary", label, () => {
+      showPopup(label);
     });
-  }
+  });
 
   backBtn.style.display = historyStack.length > 0 ? "block" : "none";
 }
@@ -121,29 +127,24 @@ function showPopup(keyword) {
   popup.className = "article-box";
 
   popup.innerHTML = `
-    <span class="close" onclick="this.parentElement.remove()" style="position:absolute; top:10px; right:15px; cursor:pointer; font-size:18px;">✖</span>
-    <h2>📌 "${keyword}" 관련 기사</h2>
-    <div id="article-list" style="margin-top: 10px;"></div>
+    <span class="close" onclick="this.parentElement.remove()" style="position:absolute; top:10px; right:15px; cursor:pointer;">✖</span>
+    <h2>📌 "\${keyword}" 관련 기사</h2>
+    <div id="article-list"></div>
     <div id="summary-box" style="margin-top:20px; padding:10px; border-top:1px solid #ccc;"></div>
   `;
+
   document.body.appendChild(popup);
 
-  // 예시 기사 데이터
   const mockArticles = [
     {
       title: `${keyword} 관련 뉴스 1`,
-      description: `${keyword}에 대한 기사 요약 내용입니다. 주요 내용이 여기에 표시됩니다. 주요 내용이 여기에 표시됩니다. 주요 내용이 여기에 표시됩니다. 주요 내용이 여기에 표시됩니다. 주요 내용이 여기에 표시됩니다. 주요 내용이 여기에 표시됩니다. 주요 내용이 여기에 표시됩니다. 주요 내용이 여기에 표시됩니다. 주요 내용이 여기에 표시됩니다. 주요 내용이 여기에 표시됩니다. 주요 내용이 여기에 표시됩니다. 주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.주요 내용이 여기에 표시됩니다.`,
+      description: `${keyword}에 대한 기사 요약 내용입니다.`,
       link: "https://example.com/news1"
     },
     {
       title: `${keyword} 뉴스 속보`,
-      description: `이것은 ${keyword}에 대한 두 번째 기사입니다. 핵심 정보가 들어갑니다.`,
+      description: `${keyword}에 대한 두 번째 기사입니다.`,
       link: "https://example.com/news2"
-    },
-    {
-      title: `${keyword} 분석 리포트`,
-      description: `심층 분석된 ${keyword} 기사입니다. 내용이 더 풍부합니다.`,
-      link: "https://example.com/news3"
     }
   ];
 
@@ -152,29 +153,19 @@ function showPopup(keyword) {
 
   mockArticles.forEach((article, idx) => {
     const p = document.createElement("p");
-    p.textContent = `${idx + 1}. ${article.title}`;
+    p.textContent = `${idx + 1}. \${article.title}`;
     p.style.cursor = "pointer";
-    p.style.margin = "6px 0";
     p.style.color = "#007bff";
     p.style.textDecoration = "underline";
-
     p.addEventListener("click", () => {
       document.getElementById("summary-box").innerHTML = `
-  <h3>📰 ${article.title}</h3>
-  <p>${article.description}</p>
-  <a href="${article.link}" target="_blank" class="view-link">원본 기사 보기</a>
-`;
-
+        <h3>📰 \${article.title}</h3>
+        <p>\${article.description}</p>
+        <a href="\${article.link}" target="_blank">원본 기사 보기</a>
+      `;
     });
-
     list.appendChild(p);
   });
-}
-
-
-
-if (!data[initialKeyword]) {
-  data[initialKeyword] = { primary: ["1차-A", "1차-B", "1차-C"] };
 }
 
 renderMap(initialKeyword);

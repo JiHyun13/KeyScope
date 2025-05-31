@@ -630,10 +630,10 @@ def save_articles_from_naver_parallel(query, max_workers=10):  # 병렬처리 �
         "X-Naver-Client-Secret": client_secret
     }
 
-    display = 100
+    display = 10
     saved_count_by_domain = {domain: 0 for domain in CRAWLER_FUNCTION_MAP.keys()}
 
-    for start in range(1, 1000 + 1, display):
+    for start in range(1, 1001, display):
         url = f"https://openapi.naver.com/v1/search/news.json?query={encoded_query}&display={display}&start={start}&sort=date"
         response = requests.get(url, headers=headers)
 
@@ -691,13 +691,3 @@ def save_articles_from_naver_parallel(query, max_workers=10):  # 병렬처리 �
 
     print(f"\n✅ 저장 요약을 '{filename}' 파일로 저장했습니다.")
 
-# main 실행부 (input으로 검색어 받음)  
-if __name__ == "__main__":
-    search_keyword = input("검색어를 입력하세요: ").strip()
-    if search_keyword:
-        start_time = time.time()
-        save_articles_from_naver_parallel(search_keyword)
-        end_time = time.time()
-        print(f"총 실행 시간: {end_time - start_time:.2f}초")
-    else:
-        print("검색어가 입력되지 않았습니다.")
