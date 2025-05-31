@@ -211,4 +211,33 @@ svg#mindmap {
   color: #333;
 }
 
+/* 로딩 메시지 출력용 */
+#output {
+  position: fixed;
+  top: 20px;             /* 기존 로고 밑쪽 적당한 위치 */
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 31, 72, 0.9); /* 기존 #001F48 계열 반투명 */
+  color: white;
+  font-weight: bold;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-family: Arial, sans-serif;
+  z-index: 10000;
+  white-space: pre-line; /* 줄바꿈 유지 */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  max-width: 80vw;
+  text-align: center;
+}
+
+#output.loading-text {
+  animation: blink 1.5s infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+
 

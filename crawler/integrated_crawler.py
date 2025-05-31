@@ -558,9 +558,7 @@ def save_to_supabase(data, query_keyword, log_path="save_log.txt"):
         if existing.data:
             print(f"⚠️ 이미 저장된 기사: {data['url']}")
             return False
-
         article_keywords = extract_keywords_with_scores(data["body"], top_n=5)
-
         record = data.copy()
         record["query_keyword"] = query_keyword
         record["article_keywords"] = article_keywords  # ✅ jsonb로 저장될 구조
@@ -633,7 +631,7 @@ def save_articles_from_naver_parallel(query, max_workers=10):  # 병렬처리 �
     display = 10
     saved_count_by_domain = {domain: 0 for domain in CRAWLER_FUNCTION_MAP.keys()}
 
-    for start in range(1, 1001, display):
+    for start in range(1, 101, display):
         url = f"https://openapi.naver.com/v1/search/news.json?query={encoded_query}&display={display}&start={start}&sort=date"
         response = requests.get(url, headers=headers)
 

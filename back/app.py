@@ -4,7 +4,7 @@ from summary import summarize
 from flask_cors import CORS
 from crawler.integrated_crawler import save_articles_from_naver_parallel
 from news_fetcher import get_keyword_graph
-from crawler.keyword_expansion import expand_and_crawl_with_tree
+from crawler.keyword_expansion import expand_keywords
 
 app = Flask(__name__)
 CORS(app)
@@ -20,7 +20,7 @@ def crawl_news():
         return jsonify({"error": "검색어가 없습니다"}), 400
     try:
         save_articles_from_naver_parallel(keyword)  # ✅ 핵심 동작 연결
-        return jsonify({"message": f"'{keyword}' 관련 기사 수집 완료"})
+        return jsonify({"message": f"'{keyword}' 쿼리 관련 기사 수집 완료"})
     except Exception as e:
         print("❌ 수집 중 에러:", e)
         return jsonify({"error": str(e)}), 500
@@ -34,11 +34,9 @@ def expand_keywords_api():
         return jsonify({"error": "검색어가 없습니다"}), 400
 
     try:
-        print(f"🌱 확장 시작: {keyword}")
-        tree = expand_and_crawl_with_tree(keyword)
-        return jsonify(tree)  # {"tree": {...}} 형태 반환
+        children_list = expand_keywords(keyword)  # 순수 리스트 반환
+        return jsonify({"children_keywords": children_list})
     except Exception as e:
-        print(f"❌ 확장 실패: {e}")
         return jsonify({"error": str(e)}), 500
 
 @app.route("/summarize", methods=["POST"]) 

@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 from supabase import create_client
 from keybert import KeyBERT
 from collections import Counter
+from flask import jsonify
 from crawler.integrated_crawler import save_articles_from_naver_parallel
 
 
@@ -26,98 +27,46 @@ def is_valid_keyword(word):
     if word.endswith(("을", "를", "은", "는", "이", "가", "에", "의", "로")): return False
     return True
 
-def get_keywords_for_query(query_keyword):
-    response = supabase.table("test").select("article_keywords").eq("query_keyword", query_keyword).execute()
-    print(f"🧩 '{query_keyword}'에 대한 행 개수:", len(response.data))
+def get_top_keywords_by_title(query_keyword, top_n=5):
+    print(f"\n🧩 '{query_keyword}' 관련 기사 제목에서 키워드 추출")
 
-    keywords = []
+    # Supabase에서 query_keyword에 해당하는 기사들 불러오기
+    response = supabase.table("test").select("title").eq("query_keyword", query_keyword).execute()
+    print(f"📄 제목 수: {len(response.data)}")
+
+    word_counter = Counter()
     for row in response.data:
-        if row["article_keywords"]:
-            try:
-                for kw in row["article_keywords"]:
-                    if "keyword" in kw:
-                        word = kw["keyword"].strip()
-                        if 2 <= len(word) <= 15 and word != query_keyword:
-                            keywords.append(word)
-            except Exception as e:
-                print(f"⚠️ 키워드 파싱 실패: {e}")
-    print(f"🎯 추출된 키워드 수 (전처리 후): {len(keywords)})")
-    return keywords
+        title = row.get("title", "")
+        words = re.findall(r"[가-힣]{2,}", title)  # 한글 2글자 이상만 추출
+        filtered = [w for w in words if is_valid_keyword(w) and w != query_keyword]
+        word_counter.update(filtered)
 
-def get_top_similar_keywords(query_keyword, candidate_keywords, top_n=3, with_score=False):
-    print("🔍 유사 키워드 추출 시작")
-    if not candidate_keywords:
-        return []
-
-    candidate_keywords = list(set([kw for kw in candidate_keywords if kw != query_keyword]))
-    filtered_keywords = [kw for kw in candidate_keywords if is_valid_keyword(kw)]
-    filtered_keywords = list(set(filtered_keywords))[:30]
-    if not filtered_keywords:
-        return []
-
-    try:
-        print(f"🧠 유사도 계산 중...)")
-        result = kw_model.extract_keywords(query_keyword, candidates=filtered_keywords, top_n=top_n)
-    except Exception as e:
-        print(f"⚠️ 유사도 계산 오류: {e}")
-        result = []
-
-    return result if with_score else [kw for kw, _ in result]
+    # 상위 top_n 반환
+    top_keywords = word_counter.most_common(top_n)
+    print(f"🎯 최빈도 키워드: {top_keywords}")
+    return [{"name": kw, "score": round(freq / top_keywords[0][1], 3)} for kw, freq in top_keywords]
 
 
-def expand_and_crawl_with_tree(query_keyword):
+def expand_keywords(query_keyword):
     print(f"✅ 시작: {query_keyword}")
-    visited = set([query_keyword])
+    children_list = get_top_keywords_by_title(query_keyword)
+    print(f"확장 키워드 리스트: {children_list}") 
 
-    # 루트에서 자식 3개 추출
-    level1_candidates = get_keywords_for_query(query_keyword)
-    level1_results = get_top_similar_keywords(query_keyword, level1_candidates, top_n=2, with_score=True)
+    # 순수 데이터 반환
+    return children_list
 
-    children = []
+# def expand_crawl_with_tree(child_keyword):
+#     save_articles_from_naver_parallel(child_keyword['name'])
 
-    for i, (child_kw, child_score) in enumerate(level1_results):
-        if child_kw in visited:
-            continue
-        visited.add(child_kw)
-        print(f"🌐 1차 크롤링: {child_kw}")
-        try:
-            save_articles_from_naver_parallel(child_kw)
-        except Exception as e:
-            print(f"❌ {child_kw} 크롤링 실패: {e}")
+#         # grand_keywords = get_top_keywords_by_title(child['name'], top_n=2)
+#         # for g in grand_keywords:
+#         #     try:
+#         #         print(f"🌐 손자 크롤링 시작: {g['name']}")
+#         #         save_articles_from_naver_parallel(g['name'])
+#         #         print(f"🌐 손자 크롤링 완료: {g['name']}")
+#         #     except Exception as e:
+#         #         print(f"❌ 손자 크롤링 실패: {e}")
+#         # child["children"] = grand_keywords
 
-        # 자식 키워드에서 손주 2개 추출
-        level2_candidates = get_keywords_for_query(child_kw)
-        level2_results = get_top_similar_keywords(child_kw, level2_candidates, top_n=2, with_score=True)
-
-        grandchildren = []
-        for j, (g_kw, g_score) in enumerate(level2_results):
-            if g_kw in visited:
-                continue
-            visited.add(g_kw)
-            print(f"🌐 2차 크롤링: {g_kw}")
-            try:
-                save_articles_from_naver_parallel(g_kw)
-            except Exception as e:
-                print(f"❌ {g_kw} 크롤링 실패: {e}")
-            grandchildren.append({
-                "name": g_kw,
-                "score": round(g_score, 3)
-            })
-
-        children.append({
-            "name": child_kw,
-            "score": round(child_score, 3),
-            "children": grandchildren
-        })
-
-    return {
-        "tree": {
-            "name": query_keyword,
-            "score": 1.0,
-            "children": children
-        }
-    }
-
-
-
-
+#     print("크롤링+확장 결과 트리:", )
+#     return tree
