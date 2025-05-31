@@ -27,7 +27,7 @@ def is_valid_keyword(word):
     if word.endswith(("을", "를", "은", "는", "이", "가", "에", "의", "로")): return False
     return True
 
-def get_top_keywords_by_title(query_keyword, top_n=5):
+def get_top_keywords_by_title(query_keyword, top_n=3):
     print(f"\n🧩 '{query_keyword}' 관련 기사 제목에서 키워드 추출")
 
     # Supabase에서 query_keyword에 해당하는 기사들 불러오기
@@ -49,10 +49,17 @@ def get_top_keywords_by_title(query_keyword, top_n=5):
 
 def expand_keywords(query_keyword):
     print(f"✅ 시작: {query_keyword}")
-    children_list = get_top_keywords_by_title(query_keyword)
-    print(f"확장 키워드 리스트: {children_list}") 
 
-    # 순수 데이터 반환
+    children_list = get_top_keywords_by_title(query_keyword)
+    print(f"확장 키워드 리스트: {children_list}")
+
+    if not children_list:
+        print(f"🔄 기사 없음, 크롤링 수행: {query_keyword}")
+        save_articles_from_naver_parallel(query_keyword)
+        print(f"크롤링 완료, 재조회 시작: {query_keyword}")
+        children_list = get_top_keywords_by_title(query_keyword)
+        print(f"크롤링 후 확장 키워드 리스트: {children_list}")
+
     return children_list
 
 # def expand_crawl_with_tree(child_keyword):

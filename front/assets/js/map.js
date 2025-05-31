@@ -11,35 +11,37 @@ const data = {
   "1차-C": { secondary: ["2차 C-1", "2차 C-2", "2차 C-3"] }
 };
 
-// 바로 fetch 요청 실행
-fetch("http://localhost:5000/expand", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ text: initialKeyword }),
-})
-  .then(res => res.json())
-  .then(json => {
-    if (json.error) {
-      console.error("확장 크롤링 오류:", json.error);
-      return;
-    }
-
-    const children = json.children_keywords || [];
-    const childNames = children.map(child => child.name);
-
-    data[initialKeyword] = { primary: childNames };
-    childNames.forEach(child => {
-      if (!data[child]) {
-        data[child] = { secondary: [] };
-      }
-    });
-
-    renderMap(initialKeyword);
+function startExpandCrawlingAndRender(keyword) {
+  fetch("http://localhost:5000/expand", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ text: keyword }),
   })
-  .catch(err => {
-    console.error("서버 요청 실패:", err);
-  });
+    .then(res => res.json())
+    .then(json => {
+      if (json.error) {
+        console.error("확장 크롤링 오류:", json.error);
+        return;
+      }
+      const children = json.children_keywords || [];
+      const childNames = children.map(child => child.name);
 
+      data[keyword] = { primary: childNames };
+
+      childNames.forEach(child => {
+        if (!data[child]) {
+          data[child] = { secondary: [] };
+        }
+      });
+
+      renderMap(keyword);
+    })
+    .catch(err => {
+      console.error("서버 요청 실패:", err);
+    });
+}
+
+startExpandCrawlingAndRender(initialKeyword);
 // renderMap, drawCircle, drawLine, showPopup, backBtn 이벤트 핸들러 함수는 기존 그대로 유지
 
 function renderMap(center) {
@@ -64,7 +66,7 @@ function renderMap(center) {
     drawLine(cx, cy, x, y, "gray");
     drawCircle(x, y, rPrimary, "primary", label, () => {
       historyStack.push(center);
-      renderMap(label);
+      startExpandCrawlingAndRender(label);
     });
 
     const secondaryList = data[label]?.secondary || [];
@@ -193,35 +195,3 @@ function showPopup(keyword) {
   });
 }
 
-async function startExpandCrawling(keyword) {
-  try {
-    const res = await fetch("http://localhost:5000/expand", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text: keyword }),
-    });
-    const json = await res.json();
-
-    if (json.error) {
-      console.error("확장 크롤링 오류:", json.error);
-      return;
-    }
-
-    const children = json.children_keywords || [];
-
-    // 받은 리스트를 data 객체에 primary로 저장
-    data[keyword] = { primary: children };
-
-    // 자식 노드들도 빈 secondary 배열로 초기화 (필요 시)
-    children.forEach(child => {
-      if (!data[child]) {
-        data[child] = { secondary: [] };
-      }
-    });
-
-    renderMap(keyword);
-
-  } catch (e) {
-    console.error("서버 요청 실패:", e);
-  }
-}
