@@ -10,15 +10,17 @@ CORS(app)
 
 # index.html 에서 불러오는 query 
 @app.route("/crawl", methods=["POST"])
-def crawl_news():
+async def crawl_news():
     data = request.get_json()
     keyword = data.get("text", "").strip()
     print(f"🔍 검색어 수신: {keyword}")
 
     if not keyword:
         return jsonify({"error": "검색어가 없습니다"}), 400
+    
     try:
-        save_articles_from_naver_parallel(keyword)  # ✅ 핵심 동작 연결
+        # save_articles_from_naver_parallel을 비동기적으로 호출
+        await save_articles_from_naver_parallel(keyword)
         return jsonify({"message": f"'{keyword}' 쿼리 관련 기사 수집 완료"})
     except Exception as e:
         print("❌ 수집 중 에러:", e)

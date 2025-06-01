@@ -1,4 +1,3 @@
-import requests
 import urllib.parse
 from urllib.parse import urlparse
 from bs4 import BeautifulSoup
@@ -7,16 +6,18 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from keybert import KeyBERT
-import time
+import os, sys, requests
 
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+import asyncio
+import aiohttp
 
 # ✅ Supabase 설정
-SUPABASE_URL = "https://ypyujiaoeaqykbqetjef.supabase.co"
-SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlweXVqaWFvZWFxeWticWV0amVmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY1NDUyNTQsImV4cCI6MjA2MjEyMTI1NH0.RuR9l89gxCcMkSzO053EHluQ0ers-piN4SUjZ-LtWjU"
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+supabase = create_client(os.getenv("SUPABASE_URL"), os.getenv("SUPABASE_KEY"))
 
 
 ## -----------------언론사 크롤러 코드 시작!!!! 여기부터 안 건드려도 돼요--------------------
@@ -543,41 +544,7 @@ def crawl_fn_news(url):
         "media": "파이낸셜뉴스"
     }
 
-## -----------------언론사 크롤러 코드 끝!!!! 여기까지 안 건드려도 돼요--------------------
 
-kw_model = KeyBERT(model='distiluse-base-multilingual-cased')
-# ✅ Supabase 저장 함수 (수정: 'test' 테이블, keyword 컬럼 추가)
-def extract_keywords_with_scores(body, top_n=5):
-    raw = kw_model.extract_keywords(body, top_n=top_n)
-    return [{"keyword": kw, "score": round(score, 4)} for kw, score in raw]
-
-# ✅ Supabase 저장 함수 수정: 'keywords' 포함
-def save_to_supabase(data, query_keyword, log_path="save_log.txt"):
-    try:
-        existing = supabase.table("test").select("id").eq("url", data["url"]).eq("query_keyword", query_keyword).execute()
-        if existing.data:
-            print(f"⚠️ 이미 저장된 기사: {data['url']}")
-            return False
-        article_keywords = extract_keywords_with_scores(data["body"], top_n=5)
-        record = data.copy()
-        record["query_keyword"] = query_keyword
-        record["article_keywords"] = article_keywords  # ✅ jsonb로 저장될 구조
-
-        supabase.table("test").insert([record]).execute()
-        print(f"✅ 저장 완료: {data['title']}")
-        return True
-
-    except Exception as e:
-        print(f"❌ 저장 실패: {e}")
-        return False
-
-
-    except Exception as e:
-        msg = f"❌ 저장 실패: {e}"
-        print(msg)
-        with open(log_path, "a", encoding="utf-8") as f:
-            f.write(msg + "\n")
-        return False
 # 언론사 도메인 → 크롤링 함수 매핑
 CRAWLER_FUNCTION_MAP = {
     "www.yna.co.kr": crawl_yonhap_news,
@@ -616,11 +583,46 @@ MEDIA_NAME_MAP = {
     
 }
 
-from concurrent.futures import ThreadPoolExecutor, as_completed
+## -----------------언론사 크롤러 코드 끝!!!! 여기까지 안 건드려도 돼요--------------------
 
-def save_articles_from_naver_parallel(query, max_workers=10):  # 병렬처리 시도
-    client_id = "_TznE38btYhyzWYsq9XK"
-    client_secret = "06UYVlSHF9"
+# KeyBERT 모델 초기화
+kw_model = KeyBERT(model='distiluse-base-multilingual-cased')
+
+# 비동기 요청 함수
+async def fetch_url(session, url, headers):
+    async with session.get(url, headers=headers) as response:
+        return await response.json()
+        
+# 키워드 추출 함수
+def extract_keywords_with_scores(body, top_n=5):
+    try:
+        raw = kw_model.extract_keywords(body, top_n=top_n)
+        return [{"keyword": kw, "score": round(score, 4)} for kw, score in raw]
+    except Exception as e:
+        print(f"❌ 키워드 추출 오류: {e}")
+        return []
+    
+async def crawl_and_extract(session, url, headers, executor,saved_count_by_domain):
+    response = await fetch_url(session, url, headers)
+    items = response.get("items", [])
+
+    for item in items:
+        originallink = item.get("originallink", "")
+        domain = urlparse(originallink).netloc
+        if domain in CRAWLER_FUNCTION_MAP:
+            article = await executor.submit(CRAWLER_FUNCTION_MAP[domain], originallink)
+            if article:
+                article_keywords = extract_keywords_with_scores(article['body'], top_n=5)
+                article["article_keywords"] = article_keywords
+                success = save_to_supabase(article)
+                if success:
+                    domain = urlparse(article["url"]).netloc
+                    saved_count_by_domain[domain] += 1
+    return items
+
+async def save_articles_from_naver_parallel(query, max_workers=10):
+    client_id = os.getenv("client_id")
+    client_secret = os.getenv("client_secret")
 
     encoded_query = urllib.parse.quote(query)
     headers = {
@@ -628,10 +630,12 @@ def save_articles_from_naver_parallel(query, max_workers=10):  # 병렬처리 �
         "X-Naver-Client-Secret": client_secret
     }
 
-    display = 10
+    display = 100
     saved_count_by_domain = {domain: 0 for domain in CRAWLER_FUNCTION_MAP.keys()}
+    all_news_bodies = []  # 뉴스 본문을 저장할 리스트
 
-    for start in range(1, 101, display):
+    # 네이버 API 호출
+    for start in range(1, 501, display):
         url = f"https://openapi.naver.com/v1/search/news.json?query={encoded_query}&display={display}&start={start}&sort=date"
         response = requests.get(url, headers=headers)
 
@@ -644,42 +648,36 @@ def save_articles_from_naver_parallel(query, max_workers=10):  # 병렬처리 �
         if not items:
             break
 
-        with ThreadPoolExecutor(max_workers=max_workers) as executor:
-            futures = []
+        # 비동기적으로 크롤링
+        tasks = []
+        for item in items:
+            originallink = item.get("originallink", "")
+            domain = urlparse(originallink).netloc
 
-            for item in items:
-                originallink = item.get("originallink", "")
-                domain = urlparse(originallink).netloc
+            if domain in CRAWLER_FUNCTION_MAP:
+                tasks.append(asyncio.to_thread(CRAWLER_FUNCTION_MAP[domain], originallink))  # 비동기적으로 크롤링
 
-                if domain in CRAWLER_FUNCTION_MAP:
-                    futures.append(executor.submit(CRAWLER_FUNCTION_MAP[domain], originallink))
-                else:
-                    continue
+        results = await asyncio.gather(*tasks)  # 모든 작업이 끝날 때까지 기다림
 
-            for future in as_completed(futures):
-                try:
-                    article = future.result()
-                except Exception as e:
-                    print(f"❌ 크롤링 중 예외 발생: {e}")
-                    continue
+        # 결과 처리
+        for article in results:
+            if article:
+                all_news_bodies.append(article['body'])
+                article_keywords = extract_keywords_with_scores(article['body'], top_n=5)
+                article["article_keywords"] = article_keywords
+                success = save_to_supabase(article, query)
+                if success:
+                    domain = urlparse(article["url"]).netloc
+                    saved_count_by_domain[domain] += 1
 
-                if article:
-                    success = save_to_supabase(article, query)
-                    if success:
-                        domain = urlparse(article["url"]).netloc
-                        saved_count_by_domain[domain] += 1
-
-        if len(items) < display:
-            break
-
-    # 1) 출력
+    # 출력
     print("\n✅ 저장 요약")
     for domain, count in saved_count_by_domain.items():
         media = MEDIA_NAME_MAP.get(domain, domain)
         print(f"📰 {media} 기사 총 {count}건 Supabase test 테이블에 저장 완료")
 
-    # 2) 텍스트 파일로 저장
-    filename = f"log/{query}_news_save_summary.txt"
+    # 텍스트 파일로 저장
+    filename = f"{query}_news_save_summary.txt"
     with open(filename, "w", encoding="utf-8") as f:
         f.write(f"검색어: {query}\n\n")
         f.write("언론사별 저장 건수 요약:\n")
@@ -689,3 +687,102 @@ def save_articles_from_naver_parallel(query, max_workers=10):  # 병렬처리 �
 
     print(f"\n✅ 저장 요약을 '{filename}' 파일로 저장했습니다.")
 
+# # Supabase 저장 함수
+def save_to_supabase(data, query_keyword, log_path="save_log.txt"):
+    try:
+        # 이미 저장된 기사 체크
+        existing = supabase.table("test").select("id").eq("url", data["url"]).eq("query_keyword", query_keyword).execute()
+        if existing.data:
+            print(f"⚠️ 이미 저장된 기사: {data['url']}")
+            return False
+        
+        # 키워드 추출
+        article_keywords = extract_keywords_with_scores(data["body"], top_n=5)
+        record = data.copy()
+        record["query_keyword"] = query_keyword
+        record["article_keywords"] = article_keywords  # jsonb 구조로 저장될 키워드
+
+        # Supabase에 저장
+        response = supabase.table("test").insert([record]).execute()
+
+        supabase.table("test").insert([record]).execute()
+        print(f"✅ 저장 완료: {data['title']}")
+    except Exception as e:
+        print(f"❌ 저장 실패: {e}")
+        return False
+
+# # 네이버에서 뉴스 크롤링 (병렬 처리)
+# def save_articles_from_naver_parallel(query, max_workers=10):
+#     client_id = os.getenv("client_id")
+#     client_secret = os.getenv("client_secret")
+
+#     encoded_query = urllib.parse.quote(query)
+#     headers = {
+#         "X-Naver-Client-Id": client_id,
+#         "X-Naver-Client-Secret": client_secret
+#     }
+
+#     display = 100
+#     saved_count_by_domain = {domain: 0 for domain in CRAWLER_FUNCTION_MAP.keys()}
+#     all_news_bodies = []  # 뉴스 본문을 저장할 리스트
+
+#     # 네이버 API 호출
+#     for start in range(1, 1001, display):
+#         url = f"https://openapi.naver.com/v1/search/news.json?query={encoded_query}&display={display}&start={start}&sort=date"
+#         response = requests.get(url, headers=headers)
+
+#         if response.status_code != 200:
+#             print(f"❌ 요청 실패 at start={start}: {response.status_code}")
+#             continue
+
+#         data = response.json()
+#         items = data.get("items", [])
+#         if not items:
+#             break
+
+#         with ThreadPoolExecutor(max_workers=max_workers) as executor:
+#             futures = []
+            
+#             for item in items:
+#                 originallink = item.get("originallink", "")
+#                 domain = urlparse(originallink).netloc
+
+#                 if domain in CRAWLER_FUNCTION_MAP:
+#                     futures.append(executor.submit(CRAWLER_FUNCTION_MAP[domain], originallink))
+#                 else:
+#                     continue
+
+#             for future in as_completed(futures):
+#                 try:
+#                     article = future.result()
+#                     if article:
+#                         # 뉴스 본문만 모아두기
+#                         all_news_bodies.append(article['body'])
+#                         article_keywords = extract_keywords_with_scores(article["body"], top_n=5)
+#                         article["article_keywords"] = article_keywords
+#                         success = save_to_supabase(article, query)
+#                         if success:
+#                             domain = urlparse(article["url"]).netloc
+#                             saved_count_by_domain[domain] += 1
+#                 except Exception as e:
+#                     print(f"❌ 크롤링 중 예외 발생: {e}")
+
+#         if len(items) < display:
+#             break
+
+#     # 출력
+#     print("\n✅ 저장 요약")
+#     for domain, count in saved_count_by_domain.items():
+#         media = MEDIA_NAME_MAP.get(domain, domain)
+#         print(f"📰 {media} 기사 총 {count}건 Supabase test 테이블에 저장 완료")
+
+#     # 텍스트 파일로 저장
+#     filename = f"{query}_news_save_summary.txt"
+#     with open(filename, "w", encoding="utf-8") as f:
+#         f.write(f"검색어: {query}\n\n")
+#         f.write("언론사별 저장 건수 요약:\n")
+#         for domain, count in saved_count_by_domain.items():
+#             media = MEDIA_NAME_MAP.get(domain, domain)
+#             f.write(f"{media}: {count}건\n")
+
+#     print(f"\n✅ 저장 요약을 '{filename}' 파일로 저장했습니다.")

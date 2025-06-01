@@ -136,6 +136,7 @@ backBtn.addEventListener("click", () => {
   }
 });
 
+
 function showPopup(keyword) {
   const existing = document.getElementById("popup-box");
   if (existing) existing.remove();
