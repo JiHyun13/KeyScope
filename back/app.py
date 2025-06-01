@@ -28,7 +28,7 @@ async def crawl_news():
 
 # map.html에서 처음 +노드 클릭할 때마다 불러옴  
 @app.route("/expand", methods=["POST"])
-def expand_keywords_api():
+async def expand_keywords_api():
     data = request.get_json()
     keyword = data.get("text", "").strip()
 
@@ -36,10 +36,13 @@ def expand_keywords_api():
         return jsonify({"error": "검색어가 없습니다"}), 400
 
     try:
-        children_list = expand_keywords(keyword)  # 순수 리스트 반환
-        return jsonify({"children_keywords": children_list})
+        # 중첩된 자식 리스트를 반환하도록 비동기적으로 변경
+        expanded_result = await expand_keywords(keyword)  # 비동기적으로 호출
+        return jsonify({"expanded_keywords": expanded_result})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
 
 @app.route("/summarize", methods=["POST"]) 
 def summarize_api():
