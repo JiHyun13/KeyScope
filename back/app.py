@@ -3,13 +3,12 @@ from news_fetcher import get_articles, get_article_content
 from summary import summarize
 from flask_cors import CORS
 from crawler.integrated_crawler import save_articles_from_naver_parallel
-from news_fetcher import get_keyword_graph
 from crawler.keyword_expansion import expand_keywords
 
 app = Flask(__name__)
 CORS(app)
 
-    
+# index.html 에서 불러오는 query 
 @app.route("/crawl", methods=["POST"])
 def crawl_news():
     data = request.get_json()
@@ -24,7 +23,8 @@ def crawl_news():
     except Exception as e:
         print("❌ 수집 중 에러:", e)
         return jsonify({"error": str(e)}), 500
-    
+
+# map.html에서 처음 +노드 클릭할 때마다 불러옴  
 @app.route("/expand", methods=["POST"])
 def expand_keywords_api():
     data = request.get_json()
@@ -71,7 +71,6 @@ def article_content_api():
         return jsonify({"content": content})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
 
 
 if __name__ == "__main__":

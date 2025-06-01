@@ -1,3 +1,5 @@
 webenv/
 crawler/integrated_crawler_practice.ipynb
 crawler/seperated_crawler.ipynb
+back/.env
+back/.env.sample

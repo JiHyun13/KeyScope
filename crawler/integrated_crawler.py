@@ -679,7 +679,7 @@ def save_articles_from_naver_parallel(query, max_workers=10):  # 병렬처리 �
         print(f"📰 {media} 기사 총 {count}건 Supabase test 테이블에 저장 완료")
 
     # 2) 텍스트 파일로 저장
-    filename = f"{query}_news_save_summary.txt"
+    filename = f"log/{query}_news_save_summary.txt"
     with open(filename, "w", encoding="utf-8") as f:
         f.write(f"검색어: {query}\n\n")
         f.write("언론사별 저장 건수 요약:\n")
