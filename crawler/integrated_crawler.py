@@ -703,19 +703,29 @@ async def save_articles_from_naver_parallel(query, max_workers=10):
 # Supabase 저장 함수
 def save_to_supabase(data, query_keyword, log_path="save_log.txt"):
     try:
-        existing = supabase.table("test").select("id").eq("url", data["url"]).eq("query_keyword", query_keyword).execute()
+        # ✅ title 기준 중복 확인
+        existing = (
+            supabase
+            .table("test")
+            .select("id")
+            .eq("title", data["title"])  # 제목 기준으로 중복 체크
+            .eq("query_keyword", query_keyword)
+            .execute()
+        )
         if existing.data:
-            print(f"⚠️ 이미 저장된 기사: {data['url']}")
+            print(f"⚠️ 이미 저장된 기사: {data['title']}")
             return False
 
+        # ✅ 키워드 추출 및 저장
         article_keywords = extract_keywords_with_scores(data["body"], top_n=5)
         record = data.copy()
         record["query_keyword"] = query_keyword
         record["article_keywords"] = article_keywords
 
         response = supabase.table("test").insert([record]).execute()
-
         print(f"✅ 저장 완료: {data['title']}")
+        return True
+
     except Exception as e:
         print(f"❌ 저장 실패: {e}")
         return False
