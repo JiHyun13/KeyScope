@@ -1,5 +1,16 @@
+<<<<<<< Updated upstream
 webenv/
 crawler/integrated_crawler_practice.ipynb
 crawler/seperated_crawler.ipynb
 back/.env
 back/.env.sample
+=======
+.env
+__pycache__/
+*.pyc
+myenv/
+venv/
+test.py
+
+
+>>>>>>> Stashed changes
