@@ -1,9 +1,13 @@
-// 요소 선택
 const searchInput = document.getElementById("searchInput");
 const searchBtn = document.getElementById("searchBtn");
 const output = document.getElementById("output");
+const loadingWrapper = document.getElementById("loadingWrapper");
 
-// 버튼 클릭 이벤트
+// ✅ 시작 시 확실히 숨기기 (혹시라도 안 숨겨진 경우 대비)
+window.addEventListener("DOMContentLoaded", () => {
+  loadingWrapper.style.display = "none";
+});
+
 searchBtn.addEventListener("click", () => {
   const keyword = searchInput.value.trim();
 
@@ -12,13 +16,10 @@ searchBtn.addEventListener("click", () => {
     return;
   }
 
-  // ✅ 로딩 메시지 표시
-  if (output) {
-    output.classList.add("loading-text");
-    output.innerText = ""; // 텍스트는 CSS 애니메이션에서 처리
-  }
+  // ✅ 로딩 표시 시작
+  output.innerText = "";
+  loadingWrapper.style.display = "flex";
 
-  // ✅ 기사 수집 요청
   fetch("http://localhost:5000/crawl", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -26,28 +27,31 @@ searchBtn.addEventListener("click", () => {
   })
     .then(response => response.json())
     .then(data => {
-      console.log("✅ 기사 수집 결과:", data);
+      // ✅ 로딩 종료
+      loadingWrapper.style.display = "none";
 
-      if (output) {
-        output.classList.remove("loading-text");
-        output.innerText = data.message || `❌ 오류: ${data.error}`;
+      if (data.message) {
+        output.innerText = data.message;
+      } else {
+        output.innerText = `❌ 오류: ${data.error}`;
       }
 
       // ✅ 결과 페이지로 이동
       window.location.href = `map.html?query=${encodeURIComponent(keyword)}`;
     })
     .catch(err => {
-      console.error("❌ 서버 요청 실패:", err);
-      if (output) {
-        output.classList.remove("loading-text");
-        output.innerText = `❌ 서버 요청 실패: ${err}`;
-      }
+      loadingWrapper.style.display = "none";
+      output.innerText = `❌ 서버 요청 실패: ${err}`;
     });
 });
-// Enter 키 처리
+
 searchInput.addEventListener("keydown", (e) => {
   if (e.key === "Enter") {
     searchBtn.click();
   }
+});
 
+const darkToggle = document.getElementById("darkModeToggle");
+darkToggle.addEventListener("change", () => {
+  document.body.classList.toggle("dark-mode", darkToggle.checked);
 });

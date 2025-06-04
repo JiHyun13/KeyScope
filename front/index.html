@@ -4,24 +4,109 @@
   <meta charset="UTF-8">
   <title>KeyScope</title>
   <link rel="stylesheet" href="./assets/css/style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Gravitas+One&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Gravitas+One&display=swap" rel="stylesheet"> <!-- ✅ 폰트 추가 -->
+
+  <!-- 로티 이미지지 -->
+  <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script> 
+  <style>
+    #loadingWrapper {
+      display: none;
+      margin-top: 10px;
+      font-size: 14px;
+      color: gray;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    #loadingWrapper dotlottie-player {
+      width: 28px;
+      height: 28px;
+    }
+  </style>
 </head>
 <body>
+
+  <!-- 다크모드 -->
+  <div class="dark-toggle-wrapper">
+    <label class="switch">
+      <input type="checkbox" id="darkModeToggle">
+      <span class="slider round"></span>
+    </label>
+  </div>
+
   <div class="container">
     <h1 class="title">KeyScope</h1>
-    <p class="subtitle">기사의 키워드를 입력하여 다양한 기사들을 접해보세요 - !</p>
+    <p class="subtitle">기사의 키워드를 입력하여 다양한 기사들을 접해보세요</p>
 
     <div class="search-container">
-      <!-- ✅ ID 추가 -->
       <input type="text" id="searchInput" class="search-box" placeholder="검색어를 입력하세요.">
       <button id="searchBtn" class="search-button">검색</button>
     </div>
 
-    <!-- ✅ Output 영역 추가 -->
-    <div id="output" class="output-message" style="margin-top: 15px; color: gray;"></div>
+    <div id="output" class="output-message" style="margin-top: 15px;"></div>
+
+    <!-- 로딩 텍스트 + 애니메이션 -->
+    <div id="loadingWrapper">
+      <span>검색 결과를 불러오는 중입니다.</span>
+      <dotlottie-player
+        src="https://lottie.host/c3034d8a-6312-43fc-af8a-024674c02ebc/K38aF98kAG.lottie"
+        background="transparent"
+        speed="1"
+        loop
+        autoplay>
+      </dotlottie-player>
+    </div>
   </div>
 
-  <!-- ✅ 외부 script 파일로 분리. script.js와 연결. -->
+  <!-- 🔻 언론사 링크 영역 -->
+<div class="news-footer">
+  <a href="https://www.yna.co.kr" target="_blank" rel="noopener noreferrer">
+    <img src="https://i.namu.wiki/i/Cp867vLdR3vFxPDwaCGzIPOAxlvFjyoD8j86lBhBd-d1SNR1e5KT5xs6a2j2MRZrzXSNbxvBztFyaUKReZxfx-utUkyjKwmUVYnxAU81kDVvpoGk8UYK6q6aXJV2wSkmaAV2_SB_sabF7uhHW15EsQ.svg" alt="연합뉴스" />
+  </a>
+  <a href="https://www.newsis.com" target="_blank" rel="noopener noreferrer">
+    <img src="https://i.namu.wiki/i/RcdAN5Q4jD2fpeltmBlHu9nAhlVvY1vMwg_aOgQf8g8iT2Z0XM8_Y440sUcTvgjygfUfNKr87JEk_S11K3LuhQ.webp" alt="뉴시스" />
+  </a>
+  <a href="https://www.mt.co.kr" target="_blank" rel="noopener noreferrer">
+    <img src="https://i.namu.wiki/i/2gwCkVjLR-5At-oylqNf_vWDB4MEcfKjQNxpNEzX8j1oWFf-Tjlakmmt5cCn9-y6zJNA1SiseeQPO2VcOFaQhMrL6Sih2CQquXYq5DTBnZvwCCEnE_jIj99s0JgglO238KxvbMA0ajn5_CEztuVwtQ.svg" alt="머니투데이" />
+  </a>
+  <a href="http://biz.heraldcorp.com" target="_blank" rel="noopener noreferrer">
+    <img src="https://i.namu.wiki/i/Sq0432o8OR1mTtUPv04O4BKvhR-VLY0wNJWO5DbBZrw-PX8T3SRnWe-G0BB_Z-GPLtPv7K4jOUE3cSDROLkxwA.svg" alt="헤럴드경제" />
+  </a>
+  <a href="https://www.sedaily.com" target="_blank" rel="noopener noreferrer">
+    <img src="https://i.namu.wiki/i/-Fyej0pe52QlBujvd32AvxKJDWzB_d5EKdGncggkx-09ZH70381XPxX2pMYJq5OdBip6hinMvZcjsK_qNv3F4lc44f15fop7Rbg4fvkuvk_MTNT59sPQd0Mxu9aR9QE9VkWHKth4pXVO2WyD90sS8w.svg" alt="서울경제" />
+  </a>
+  <a href="https://www.newspim.com" target="_blank" rel="noopener noreferrer">
+    <img src="https://i.namu.wiki/i/HMszAo0HJG9vpRenhCbYYcrjmqbXrWZHyrNTMCMNGjV5jp9Nfbq5lcJc1i9aIvpo37bEsO3xViha0Zd_75s8zzhyPTGW9z3YUGCEBW5VvWL4A8v7MISvsy8eLXuIGzmVImjqNQeI1Z8HrMgFzqv-uw.svg" alt="뉴스핌" />
+  </a>
+  <a href="https://www.dailian.co.kr" target="_blank" rel="noopener noreferrer">
+    <img src="https://i.namu.wiki/i/cRjRayWWPIN1GPi9-vi-9Q0TQj7n-91kt20eclGJ4lg91VKThXJ-waEp3zFzQWJk1dKRea_mH4erWtzbr5Einc9aAyH6ne4HocLz8Leglr--BIN1Jtv5DbGkEPzkEVdb3GEC4JUhFbHf03Adr2xoIQ.svg" alt="데일리안" />
+  </a>
+  <a href="https://www.mk.co.kr" target="_blank" rel="noopener noreferrer">
+    <img src="https://i.namu.wiki/i/cvb5UlCBY3XFtk7i5wOvYUKXgobMaasD3b0tptsMLsKei8z95oAPpu2eJIZJahJPSh9TAUuZy7979oS7aOIlvbZNF9UscRjImJIYEKsMSHMfcwa2s0bUqbv8PujRUvw9gTaIqFET27M_iDAWv-691Q.svg" alt="매일경제" />
+  </a>
+  <a href="https://www.asiae.co.kr" target="_blank" rel="noopener noreferrer">
+    <img src="https://i.namu.wiki/i/KFxXWBn_COz8MxP_9T1dnUJSRmWFHZoy6KaHWWYl5VHdkFkU40tkmoQ3-8DBW7Yp7-mDcW7UlVVy_7EHqz7qpu4ZJgvJGWBa3bHZwQlm7j9dxyoX9cA22j4SF4uaov0XCaHBh1b3NTnedMo1cO75jQ.svg" alt="아시아경제" />
+  </a>
+  <a href="https://www.nocutnews.co.kr" target="_blank" rel="noopener noreferrer">
+    <img src="https://i.namu.wiki/i/826dXtUdOQJhno2DIHggagCfwfVX-_eepSOj0xPilX_a2boRhregfov1HQ6bL-gV-Gm_b0zHW-j0icvUNh5JyyBVGxFJC63WuvSxHPzOW3QpBNxZqwuro1Leh0OOaPsLc-S5zsWnYrYP7bW5teGGPQ.svg" alt="노컷뉴스" />
+  </a>
+  <a href="https://www.edaily.co.kr" target="_blank" rel="noopener noreferrer">
+    <img src="https://i.namu.wiki/i/2X_HhU5kmpw20yBK7jHBZI72laHsuu46VAL32kvMoJlq4dzv84RUHP19ur-3dLBumJonQ3_y8oWRxnt9KXbehJQv9du8--_DmGaYzy8s-FcpKvIq_HwsNMDny6WveLzBHLEnWHrH_XVMDcZ38_5Tcw.svg" alt="이데일리" />
+  </a>
+  <a href="https://www.kyeongin.com" target="_blank" rel="noopener noreferrer">
+    <img src="https://i.namu.wiki/i/2D_Ws9MFZ6rYXTw85OWUR6HubbMzMdthglo64BNLULt6y8YfqnA6g2psU-vqK2u8X3ecMq-TVVtmmQZ1j8nekjUe5VgNThd-MckAzQ5Bft0fCwinlbvV5wN8yj--8i1W59-k-rJD0qjku5Je7xJYpg.svg" alt="경인일보" />
+  </a>
+  <a href="https://www.seoul.co.kr" target="_blank" rel="noopener noreferrer">
+    <img src="https://i.namu.wiki/i/IfEPNLvXDZ_hZdbLdINIbd_UW7BBWcor5BIKf1LdttGWtk78_yFCncrJrijUBWsC5c4QrChnxelEeWkvEdHibhNT9_s262vhRM7G7jj8lyvwFdTDKlxKyaG8Hq5DdEta078-ZQMdGbD2uvaSptlzxw.svg" alt="서울신문" />
+  </a>
+  <a href="https://www.fnnews.com" target="_blank" rel="noopener noreferrer">
+    <img src="https://i.namu.wiki/i/290zYOZhHeebIEBPqtYK0VU5ZmHEr2SoWx3Eh4J8H6cH4uUn0SvkpLkf0yfQsaiu9Bitk5AvFbSrPpHog7mEVVCotwKYgv6bhlTUoS9pPoW9XXuHRTyBqnw5JXtu4IF9R9AxVPpl7dhwQJLZdKzvQw.webp" alt="파이낸셜뉴스" />
+  </a>
+</div>
+
   <script src="./assets/js/script.js"></script>
 </body>
+
 </html>
