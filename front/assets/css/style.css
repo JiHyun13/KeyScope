@@ -1,27 +1,63 @@
-body {
+/* 기본 스타일 */
+html, body {
+  height: 100%;
   margin: 0;
   padding: 0;
+  overflow: hidden; /* 스크롤 방지 */
   font-family: 'Arial', sans-serif;
   background-color: #ffffff;
   color: #000;
+  box-sizing: border-box;
 }
 
-.container {
-  min-height: calc(100vh - 140px); /* 남은 공간 계산 */
+/* 다크모드 토글 */
+.dark-toggle-wrapper {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 100;
+}
+
+/* 메인 컨텐츠 래퍼: 가로 3단 레이아웃 */
+.main-wrapper {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  height: calc(100vh - 100px); /* 푸터 높이 고려 */
+  padding: 40px;
+  justify-content: space-between;
   align-items: center;
+  gap: 20px;
+}
+
+/* 왼쪽: 소개 영역 */
+.intro-section {
+  flex: 1;
+  max-width: 300px;
+  padding-right: 20px;
+  border-right: 1px solid #ddd;
+  text-align: left;
+}
+
+.intro-section h2 {
+  font-size: 28px;
+  margin-bottom: 10px;
+  color: #050044;
+  font-family: 'Noto Serif KR', cursive;
+}
+
+.intro-section p {
+  font-size: 16px;
+  color: #404040;
+  line-height: 1.5;
+}
+
+/* 가운데: 검색 영역 */
+.container {
+  flex: 1;
+  max-width: 450px;
   text-align: center;
-  transform: translateY(-40px);
+  padding: 0 20px;
 }
 
-html, body {
-  width: 100%;
-  overflow-x: hidden;
-}
-
-/* 타이틀과 서브타이틀 스타일 */
 .title {
   font-family: 'Noto Serif KR', cursive;
   font-size: 36px;
@@ -36,7 +72,6 @@ html, body {
   color: #404040;
 }
 
-/* 검색창 및 버튼 스타일 */
 .search-container {
   display: flex;
   justify-content: center;
@@ -44,7 +79,7 @@ html, body {
 }
 
 .search-box {
-  width: 400px;
+  width: 300px;
   height: 50px;
   padding: 0 20px;
   font-size: 16px;
@@ -71,49 +106,98 @@ html, body {
   background-color: #9798fd;
 }
 
-/* 결과 출력 영역 스타일 */
-#logo {
-  position: absolute;
-  top: 20px;
-  left: 30px;
-  font-size: 24px;
-  font-weight: bold;
-  color: #001F48;
-  text-decoration: none;
-  z-index: 10;
-}
-
-svg {
-  display: block;
-  margin: 0 auto;
-  background-color: white;
-}
-
-circle {
-  cursor: pointer;
-  transition: stroke 0.3s, stroke-width 0.3s;
-}
-
-circle:hover {
-  stroke: #333;
-  stroke-width: 3px;
-}
-
-text {
-  pointer-events: none;
+/* 검색 결과 메시지 */
+#output {
+  margin-top: 15px;
   font-size: 14px;
+  min-height: 20px;
+  color: #555;
 }
 
+/* 로딩 영역 */
+#loadingWrapper {
+  margin-top: 10px;
+  font-size: 14px;
+  color: gray;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+#loadingWrapper dotlottie-player {
+  width: 28px;
+  height: 28px;
+}
+
+/* 오른쪽: ABOUT US */
+.about-us {
+  flex: 1;
+  max-width: 300px;
+  padding-left: 20px;
+  border-left: 1px solid #ddd;
+  text-align: left;
+  font-family: 'Arial', sans-serif;
+  color: #404040;
+}
+
+.about-us h3 {
+  font-size: 24px;
+  margin-bottom: 10px;
+  color: #050044;
+  font-family: 'Noto Serif KR', cursive;
+}
+
+.about-us p {
+  font-size: 16px;
+  line-height: 1.5;
+  color: #404040;
+}
+
+/* 푸터 스타일 */
+.news-footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  height: 100px;
+  border-top: 1px solid #ddd;
+  background-color: #f5f5f5;
+  padding: 0 40px;
+  box-sizing: border-box;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.news-footer a img {
+  height: 40px;
+  width: auto;
+  vertical-align: middle;
+  transition: transform 0.2s ease;
+}
+
+.news-footer a:hover img {
+  transform: scale(1.1);
+}
+
+/* 다크 모드 스타일 */
 body.dark-mode {
   background-color: #121212;
   color: #f1f1f1;
 }
 
-body.dark-mode .title {
+body.dark-mode .title,
+body.dark-mode .intro-section h2,
+body.dark-mode .about-us h3 {
   color: #ffffff;
 }
 
-body.dark-mode .subtitle {
+body.dark-mode .subtitle,
+body.dark-mode .intro-section p,
+body.dark-mode .about-us p {
   color: #cccccc;
 }
 
@@ -135,44 +219,43 @@ body.dark-mode #output {
   color: #eeeeee;
 }
 
-/* ✅ 다크모드 토글 스위치 디자인 */
-.dark-toggle-wrapper {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  z-index: 100;
+body.dark-mode .news-footer {
+  background-color: #222;
+  border-top: 1px solid #444;
+}
+
+body.dark-mode .news-footer a img {
+  filter: brightness(0) invert(1);
 }
 
 .switch {
   position: relative;
   display: inline-block;
-  width: 55px;
-  height: 28px;
+  width: 50px;
+  height: 24px;
 }
 
 .switch input {
   opacity: 0;
   width: 0;
   height: 0;
+  position: absolute;
 }
 
 .slider {
   position: absolute;
   cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  top: 0; left: 0; right: 0; bottom: 0;
   background-color: #ccc;
   transition: 0.4s;
-  border-radius: 34px;
+  border-radius: 24px;
 }
 
 .slider::before {
   position: absolute;
   content: "";
-  height: 22px;
-  width: 22px;
+  height: 18px;
+  width: 18px;
   left: 3px;
   bottom: 3px;
   background-color: white;
@@ -180,41 +263,19 @@ body.dark-mode #output {
   border-radius: 50%;
 }
 
-input:checked + .slider {
-  background-color: #4a4a90;
+.switch input:checked + .slider {
+  background-color: #4a4a90; 
 }
 
-input:checked + .slider:before {
+.switch input:checked + .slider::before {
   transform: translateX(26px);
 }
 
-/* 언론사 바로가기 */
-.news-footer {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center; /* 중앙 정렬 */
-  align-items: center;
-  gap: 16px;
-  margin-top: 60px;
-  padding: 20px 10px;
-  background-color: #f5f5f5;
-  border-top: 1px solid #ddd;
-  width: 100%;
+
+.slider.round {
+  border-radius: 24px;
 }
 
-.news-footer img {
-  height: 30px;
-  transition: transform 0.3s;
-  opacity: 0.85;
+.slider.round::before {
+  border-radius: 50%;
 }
-
-.news-footer img:hover {
-  transform: scale(1.1);
-  opacity: 1;
-}
-
-body.dark-mode .news-footer {
-  background-color: #1e1e1e;
-  border-top: 1px solid #444;
-}
-
