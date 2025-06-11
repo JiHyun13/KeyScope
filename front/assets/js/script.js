@@ -27,17 +27,17 @@ searchBtn.addEventListener("click", () => {
   })
     .then(response => response.json())
     .then(data => {
-      // ✅ 로딩 종료
       loadingWrapper.style.display = "none";
 
       if (data.message) {
         output.innerText = data.message;
+
+        const children = data.children || [];
+        const keywordParam = children.map(c => encodeURIComponent(c)).join(",");
+        window.location.href = `map.html?query=${encodeURIComponent(keyword)}&keywords=${keywordParam}`;
       } else {
         output.innerText = `❌ 오류: ${data.error}`;
       }
-
-      // ✅ 결과 페이지로 이동
-      window.location.href = `map.html?query=${encodeURIComponent(keyword)}`;
     })
     .catch(err => {
       loadingWrapper.style.display = "none";

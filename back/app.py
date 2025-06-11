@@ -1,9 +1,10 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Response, stream_with_context
 from flask_cors import CORS
 import sys
 import os
 import re
 from collections import OrderedDict
+import asyncio
 
 # 경로 설정
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
@@ -11,7 +12,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from news_fetcher import get_articles, get_article_content
 from summary import summarize
 from crawler.integrated_crawler import save_articles_from_naver_parallel
-from crawler.keyword_expansion import expand_keywords
+from crawler.keyword_expansion import expand_keywords, get_top_keywords_by_title
 
 # Flask 앱 초기화
 app = Flask(__name__)
@@ -39,10 +40,16 @@ async def crawl_news():
 
     if not keyword:
         return jsonify({"error": "검색어가 없습니다"}), 400
-    
+
     try:
         await save_articles_from_naver_parallel(keyword)
-        return jsonify({"message": f"'{keyword}' 쿼리 관련 기사 수집 완료"})
+        children = get_top_keywords_by_title(keyword, top_n=3)
+        child_names = [c["name"] for c in children]
+
+        return jsonify({
+            "message": f"'{keyword}' 쿼리 관련 기사 수집 완료",
+            "children": child_names
+        })
     except Exception as e:
         print("❌ 수집 중 에러:", e)
         return jsonify({"error": str(e)}), 500
@@ -65,7 +72,7 @@ async def expand_keywords_api():
 
 # ==================== 🧠 요약 ====================
 
-@app.route("/summarize", methods=["POST"]) 
+@app.route("/summarize", methods=["POST"])
 def summarize_api():
     data = request.get_json()
     text = data.get("text", "")
@@ -110,6 +117,3 @@ def article_content_api():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
-
-
-

@@ -629,12 +629,12 @@ async def crawl_and_extract(session, url, headers, executor, saved_count_by_doma
                     saved_count_by_domain[domain] += 1
     return items
 
-# 메인 크롤링 및 키워드 확장 함수
-async def save_articles_from_naver_parallel(query, max_workers=10):
+async def save_articles_from_naver_parallel(query, max_workers=50):
     if check_query_in_db(query):
-        print(f"⚠️ '{query}' 쿼리는 이미 DB에 저장된 상태입니다. 중복 수집을 방지합니다.")
+        msg = f"⚠️ '{query}' 쿼리는 이미 DB에 저장된 상태입니다."
+        print(msg)
         return
-    
+
     client_id = os.getenv("client_id")
     client_secret = os.getenv("client_secret")
     encoded_query = urllib.parse.quote(query)
@@ -645,15 +645,15 @@ async def save_articles_from_naver_parallel(query, max_workers=10):
 
     display = 100
     saved_count_by_domain = {domain: 0 for domain in CRAWLER_FUNCTION_MAP.keys()}
-    all_news_bodies = []  # 뉴스 본문을 저장할 리스트
+    all_news_bodies = []
 
-    # 네이버 API 호출
     for start in range(1, 501, display):
         url = f"https://openapi.naver.com/v1/search/news.json?query={encoded_query}&display={display}&start={start}&sort=date"
         response = requests.get(url, headers=headers)
 
         if response.status_code != 200:
-            print(f"❌ 요청 실패 at start={start}: {response.status_code}")
+            msg = f"❌ 요청 실패 at start={start}: {response.status_code}"
+            print(msg)
             continue
 
         data = response.json()
@@ -661,18 +661,15 @@ async def save_articles_from_naver_parallel(query, max_workers=10):
         if not items:
             break
 
-        # 비동기적으로 크롤링
         tasks = []
         for item in items:
             originallink = item.get("originallink", "")
             domain = urlparse(originallink).netloc
-
             if domain in CRAWLER_FUNCTION_MAP:
-                tasks.append(asyncio.to_thread(CRAWLER_FUNCTION_MAP[domain], originallink))  # 비동기적으로 크롤링
+                tasks.append(asyncio.to_thread(CRAWLER_FUNCTION_MAP[domain], originallink))
 
-        results = await asyncio.gather(*tasks)  # 모든 작업이 끝날 때까지 기다림
+        results = await asyncio.gather(*tasks)
 
-        # 결과 처리
         for article in results:
             if article:
                 all_news_bodies.append(article['body'])
@@ -682,23 +679,29 @@ async def save_articles_from_naver_parallel(query, max_workers=10):
                 if success:
                     domain = urlparse(article["url"]).netloc
                     saved_count_by_domain[domain] += 1
+                    msg = f"✅ 저장 완료 ^.^: {article['title']}"
+                    print(msg)
+                else:
+                    print(msg)
 
-    # 출력
-    print("\n✅ 저장 요약")
+    summary_lines = ["\n✅ 저장 요약"]
     for domain, count in saved_count_by_domain.items():
         media = MEDIA_NAME_MAP.get(domain, domain)
-        print(f"📰 {media} 기사 총 {count}건 Supabase test 테이블에 저장 완료")
+        summary_lines.append(f"📰 {media} 기사 총 {count}건 Supabase test 테이블에 저장 완료")
 
-    # 텍스트 파일로 저장
-    filename = f"{query}_news_save_summary.txt"
-    with open(filename, "w", encoding="utf-8") as f:
-        f.write(f"검색어: {query}\n\n")
-        f.write("언론사별 저장 건수 요약:\n")
-        for domain, count in saved_count_by_domain.items():
-            media = MEDIA_NAME_MAP.get(domain, domain)
-            f.write(f"{media}: {count}건\n")
+    for line in summary_lines:
+        print(msg)
 
-    print(f"\n✅ 저장 요약을 '{filename}' 파일로 저장했습니다.")
+    # # 텍스트 파일로 저장
+    # filename = f"{query}_news_save_summary.txt"
+    # with open(filename, "w", encoding="utf-8") as f:
+    #     f.write(f"검색어: {query}\n\n")
+    #     f.write("언론사별 저장 건수 요약:\n")
+    #     for domain, count in saved_count_by_domain.items():
+    #         media = MEDIA_NAME_MAP.get(domain, domain)
+    #         f.write(f"{media}: {count}건\n")
+
+    # print(f"\n✅ 저장 요약을 '{filename}' 파일로 저장했습니다.")
 
 # Supabase 저장 함수
 def save_to_supabase(data, query_keyword, log_path="save_log.txt"):
@@ -710,6 +713,7 @@ def save_to_supabase(data, query_keyword, log_path="save_log.txt"):
             .select("id")
             .eq("title", data["title"])  # 제목 기준으로 중복 체크
             .eq("query_keyword", query_keyword)
+            .eq("url", data["url"])  # URL 기준으로 중복 체크2
             .execute()
         )
         if existing.data:

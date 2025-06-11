@@ -1,17 +1,22 @@
-// 📍 전체 키워드 시각화 및 요약 팝업 기능 포함된 마인드맵 JS
-
 const svg = document.getElementById("mindmap");
 const backBtn = document.getElementById("backBtn");
 const output = document.getElementById("output");
 let currentCenter = "";
 
 const params = new URLSearchParams(window.location.search);
-const initialKeyword = params.get("query") || "골프";
+const initialKeyword = params.get("query") || "기본 키워드";
+const rawKeywords = params.get("keywords") || "";
+const childKeywords = rawKeywords.split(",").filter(k => k.trim() !== "");
+
 const expandedData = {};
 
 function startExpandCrawlingAndRender(keyword) {
   if (output) {
-    output.innerText = "로딩 중...";
+    let loadingText = `🔄 '${keyword}' 관련 키워드 크롤링 중...`;
+    if (childKeywords.length > 0) {
+      loadingText += `\n🔍 자식 키워드: ${childKeywords.join(", ")}`;
+    }
+    output.innerText = loadingText;
     output.classList.add("loading-text");
   }
 
@@ -47,8 +52,7 @@ function startExpandCrawlingAndRender(keyword) {
       renderMap(keyword, expandedData);
 
       if (output) {
-        output.classList.remove("loading-text");
-        output.innerText = "로드 완료";
+        output.remove();  // 시각화 끝났으면 제거
       }
     })
     .catch(err => {
@@ -57,6 +61,7 @@ function startExpandCrawlingAndRender(keyword) {
 }
 
 startExpandCrawlingAndRender(initialKeyword);
+
 
 function renderMap(center, data) {
   svg.innerHTML = "";
@@ -252,3 +257,4 @@ async function showPopup(keyword) {
     list.innerHTML = "<p>❌ 기사 목록을 불러오지 못했습니다.</p>";
   }
 }
+
