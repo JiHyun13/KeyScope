@@ -1,100 +1,71 @@
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
-❌ 저장 실패: {'message': "Could not find the 'keywords' column of 'test' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status_code'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status_code'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status_code'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status_code'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status_code'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status_code'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status_code'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status_code'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status_code'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status_code'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status_code'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status_code'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status_code'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status_code'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status_code'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status_code'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status_code'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status_code'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status_code'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status_code'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status_code'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status_code'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status_code'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status_code'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status_code'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status_code'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status_code'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status_code'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status_code'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status_code'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status_code'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status_code'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status_code'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status_code'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status_code'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status_code'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status_code'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status_code'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status_code'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'get'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'get'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'get'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'get'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'get'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'get'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'get'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'get'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status_code'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status_code'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status_code'
+❌ 저장 실패: 'APIResponse[TypeVar]' object has no attribute 'status_code'
