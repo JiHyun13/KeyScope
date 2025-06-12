@@ -1,13 +1,12 @@
-import os
+import os,sys
 from dotenv import load_dotenv
-from supabase import create_client, Client
+from supabase import create_client
 
-load_dotenv()
+# 환경 변수 및 Supabase 설정
+dotenv_path = os.path.join(os.path.dirname(__file__), "..", "back", ".env")
+load_dotenv(dotenv_path)
+supabase = create_client(os.getenv("SUPABASE_URL"), os.getenv("SUPABASE_KEY"))
 
-SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY")
-
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 def get_articles(keyword):
     if not keyword:

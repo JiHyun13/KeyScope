@@ -1,9 +1,8 @@
-import os, sys, re, json, time, asyncio
+import os, sys, re
 from dotenv import load_dotenv
 from supabase import create_client
 from keybert import KeyBERT
 from collections import Counter
-from flask import jsonify
 from crawler.integrated_crawler import save_articles_from_naver_parallel
 
 # 환경 변수 및 Supabase 설정
@@ -13,7 +12,6 @@ supabase = create_client(os.getenv("SUPABASE_URL"), os.getenv("SUPABASE_KEY"))
 
 # 키워드 추출 모델
 kw_model = KeyBERT(model='snunlp/KR-SBERT-V40K-klueNLI-augSTS')
-
 # 키워드 유효성 검사 함수
 def is_valid_keyword(word):
     if not word: return False
@@ -56,6 +54,9 @@ def get_top_keywords_by_title(query_keyword, top_n=3):
     print(f"🎯 최빈도 키워드: {top_keywords}")
     return [{"name": kw, "score": round(freq / top_keywords[0][1], 3)} for kw, freq in top_keywords]
 
+
+
+
 # 자식에 대한 손자 키워드 추출 (자식 3개에 대해 손자 2개)
 async def get_grandchild_keywords(child_keyword, top_n=2):
     print(f"🌱 {child_keyword} 관련 손자 키워드 추출")
@@ -87,6 +88,7 @@ async def get_grandchild_keywords(child_keyword, top_n=2):
     except Exception as e:
         print(f"❌ 손자 키워드 추출 중 오류: {e}")
         return []  # 예외 발생 시 빈 리스트 반환
+
 
 # 쿼리에 대해 자식과 손자 리스트를 생성하는 최종 함수
 async def expand_keywords(query_keyword):

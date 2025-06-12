@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>KeyScope Flowchart</title>
+  <!-- Mermaid CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({ startOnLoad: true });
+  </script>
+  <style>
+    body { margin: 0; padding: 1em; }
+  </style>
+</head>
+<body>
+  <div class="mermaid">
+    flowchart TD
+      %% f1: 검색
+      subgraph f1 [f1: 검색]
+        A1[클라이언트] --> A2[프론트엔드]
+        A2 --> A3[라우터\n(POST /crawl)]
+        A3 --> A4[NAVER_News_API 호출]
+        A4 --> f2
+      end
+
+      %% f2: 수집
+      subgraph f2 [f2: 수집]
+        f2 --> B1[도메인 추출]
+        B1 --> B2[14개 언론사 crawler 호출]
+        B2 --> B3[기사 데이터 도출]
+        B3 --> f3
+      end
+
+      %% f3: 키워드 추출
+      subgraph f3 [f3: 키워드 추출]
+        f3 --> C1[KeyBert API 호출]
+        C1 --> C2[연관 키워드 수신]
+        C2 --> C3[기사 데이터에 키워드 추가]
+        C3 --> f4
+      end
+
+      %% f4: 저장
+      subgraph f4 [f4: 저장]
+        f4 --> D1[DB 중복 확인]
+        D1 --> D2[DB 저장]
+        D2 --> f5
+      end
+
+      %% f5: 확장
+      subgraph f5 [f5: 확장]
+        f5 --> E1[프론트엔드\n(index → map)]
+        E1 --> E2[라우터\n(POST /expand)]
+        E2 --> E3[상위3 키워드 선택]
+        E3 --> f3
+        E3 --> f4
+        E3 --> f6
+      end
+
+      %% f6: 시각화
+      subgraph f6 [f6: 시각화]
+        f6 --> G1[프론트엔드에 데이터 전송]
+        G1 --> G2[유사도에 따른 원 크기 표시]
+      end
+
+      %% f7: 뉴스목록
+      subgraph f7 [f7: 뉴스목록]
+        H1[클라이언트 클릭 이벤트] --> H2[프론트엔드]
+        H2 --> H3[라우터\n(/api/articles)]
+        H3 --> H4[DB 조회]
+        H4 --> H5[기사 목록 반환]
+        H5 --> H2
+      end
+
+      %% f8: 뉴스요약
+      subgraph f8 [f8: 뉴스요약]
+        I1[클라이언트 클릭 이벤트] --> I2[프론트엔드]
+        I2 --> I3[라우터\n(/api/article_content)]
+        I3 --> I4[전처리 함수\n(텍스트 전처리·유효성검사)]
+        I4 --> I5[HF_Model_API 호출]
+        I5 --> I6[요약된 뉴스 반환]
+        I6 --> I2
+      end
+  </div>
+</body>
+</html>

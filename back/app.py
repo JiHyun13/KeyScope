@@ -9,8 +9,8 @@ import asyncio
 # 경로 설정
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from news_fetcher import get_articles, get_article_content
-from summary import summarize
+from summerize.news_fetcher import get_articles, get_article_content
+from summerize.summary import summarize
 from crawler.integrated_crawler import save_articles_from_naver_parallel
 from crawler.keyword_expansion import expand_keywords, get_top_keywords_by_title
 

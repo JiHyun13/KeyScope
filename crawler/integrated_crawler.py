@@ -2,18 +2,12 @@ import urllib.parse
 from urllib.parse import urlparse
 from bs4 import BeautifulSoup
 from supabase import create_client, Client
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
+
 from keybert import KeyBERT
 import os, sys, requests
-
-from concurrent.futures import ThreadPoolExecutor, as_completed
-from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import asyncio
-import aiohttp
 
 # ✅ Supabase 설정
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
@@ -610,29 +604,11 @@ def check_query_in_db(query_keyword):
         print(f"❌ DB 확인 중 오류: {e}")
         return False
 
-# 자식 키워드 및 손자 키워드 생성
-async def crawl_and_extract(session, url, headers, executor, saved_count_by_domain):
-    response = await fetch_url(session, url, headers)
-    items = response.get("items", [])
-
-    for item in items:
-        originallink = item.get("originallink", "")
-        domain = urlparse(originallink).netloc
-        if domain in CRAWLER_FUNCTION_MAP:
-            article = await executor.submit(CRAWLER_FUNCTION_MAP[domain], originallink)
-            if article:
-                article_keywords = extract_keywords_with_scores(article['body'], top_n=5)
-                article["article_keywords"] = article_keywords
-                success = save_to_supabase(article)
-                if success:
-                    domain = urlparse(article["url"]).netloc
-                    saved_count_by_domain[domain] += 1
-    return items
 
 async def save_articles_from_naver_parallel(query, max_workers=50):
     if check_query_in_db(query):
-        msg = f"⚠️ '{query}' 쿼리는 이미 DB에 저장된 상태입니다."
-        print(msg)
+
+        print(f"⚠️ '{query}' 쿼리는 이미 DB에 저장된 상태입니다.")
         return
 
     client_id = os.getenv("client_id")
@@ -652,8 +628,8 @@ async def save_articles_from_naver_parallel(query, max_workers=50):
         response = requests.get(url, headers=headers)
 
         if response.status_code != 200:
-            msg = f"❌ 요청 실패 at start={start}: {response.status_code}"
-            print(msg)
+
+            print(f"❌ 요청 실패 at start={start}: {response.status_code}")
             continue
 
         data = response.json()
@@ -679,49 +655,36 @@ async def save_articles_from_naver_parallel(query, max_workers=50):
                 if success:
                     domain = urlparse(article["url"]).netloc
                     saved_count_by_domain[domain] += 1
-                    msg = f"✅ 저장 완료 ^.^: {article['title']}"
-                    print(msg)
-                else:
-                    print(msg)
 
     summary_lines = ["\n✅ 저장 요약"]
     for domain, count in saved_count_by_domain.items():
         media = MEDIA_NAME_MAP.get(domain, domain)
         summary_lines.append(f"📰 {media} 기사 총 {count}건 Supabase test 테이블에 저장 완료")
 
-    for line in summary_lines:
-        print(msg)
-
-    # # 텍스트 파일로 저장
-    # filename = f"{query}_news_save_summary.txt"
-    # with open(filename, "w", encoding="utf-8") as f:
-    #     f.write(f"검색어: {query}\n\n")
-    #     f.write("언론사별 저장 건수 요약:\n")
-    #     for domain, count in saved_count_by_domain.items():
-    #         media = MEDIA_NAME_MAP.get(domain, domain)
-    #         f.write(f"{media}: {count}건\n")
-
-    # print(f"\n✅ 저장 요약을 '{filename}' 파일로 저장했습니다.")
 
 # Supabase 저장 함수
 def save_to_supabase(data, query_keyword, log_path="save_log.txt"):
     try:
-        # ✅ title 기준 중복 확인
+        # 중복 체크
         existing = (
             supabase
             .table("test")
             .select("id")
-            .eq("title", data["title"])  # 제목 기준으로 중복 체크
+            .eq("title", data["title"])
             .eq("query_keyword", query_keyword)
-            .eq("url", data["url"])  # URL 기준으로 중복 체크2
+            .eq("url", data["url"])
             .execute()
         )
         if existing.data:
             print(f"⚠️ 이미 저장된 기사: {data['title']}")
             return False
 
-        # ✅ 키워드 추출 및 저장
-        article_keywords = extract_keywords_with_scores(data["body"], top_n=5)
+        # ✅ 중복 추출 방지: 이미 추출된 키워드가 있으면 재사용
+        article_keywords = data.get("article_keywords")
+        if not article_keywords:
+            article_keywords = extract_keywords_with_scores(data["body"], top_n=5)
+
+        # Supabase 저장
         record = data.copy()
         record["query_keyword"] = query_keyword
         record["article_keywords"] = article_keywords

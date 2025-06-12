@@ -1,11 +1,15 @@
 import requests
-import os
+import os,sys
 import re
 from dotenv import load_dotenv
+from supabase import create_client
 from transformers import PreTrainedTokenizerFast
 
-# 환경변수 로드
-load_dotenv()
+# 환경 변수 및 Supabase 설정
+dotenv_path = os.path.join(os.path.dirname(__file__), "..", "back", ".env")
+load_dotenv(dotenv_path)
+supabase = create_client(os.getenv("SUPABASE_URL"), os.getenv("SUPABASE_KEY"))
+
 
 # API 설정
 HF_API_URL = "https://api-inference.huggingface.co/models/eenzeenee/t5-base-korean-summarization"
