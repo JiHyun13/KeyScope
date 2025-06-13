@@ -622,6 +622,7 @@ async def save_articles_from_naver_parallel(query, max_workers=50):
     display = 100
     saved_count_by_domain = {domain: 0 for domain in CRAWLER_FUNCTION_MAP.keys()}
     all_news_bodies = []
+    count=0 #전체 개수 count 
 
     for start in range(1, 501, display):
         url = f"https://openapi.naver.com/v1/search/news.json?query={encoded_query}&display={display}&start={start}&sort=date"
@@ -655,6 +656,10 @@ async def save_articles_from_naver_parallel(query, max_workers=50):
                 if success:
                     domain = urlparse(article["url"]).netloc
                     saved_count_by_domain[domain] += 1
+                    count+=1
+                    if count>30:
+                        print('뉴스 30개 이상 추출완료')
+                        break
 
     summary_lines = ["\n✅ 저장 요약"]
     for domain, count in saved_count_by_domain.items():

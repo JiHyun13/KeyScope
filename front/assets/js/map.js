@@ -12,13 +12,18 @@ const expandedData = {};
 
 function startExpandCrawlingAndRender(keyword) {
   if (output) {
-    let loadingText = `🔄 '${keyword}' 관련 키워드 크롤링 중...`;
-    if (childKeywords.length > 0) {
-      loadingText += `\n🔍 자식 키워드: ${childKeywords.join(", ")}`;
-    }
-    output.innerText = loadingText;
+    output.innerText = `🔄 '${keyword}' 연관 키워드 크롤링 중... (0초 경과)`;
     output.classList.add("loading-text");
   }
+
+  const startTime = Date.now();
+  const timer = setInterval(() => {
+  const sec = Math.floor((Date.now() - startTime) / 1000);
+    if (output) {
+      output.innerText = `🔄 '${keyword}' 연관 키워드 크롤링 중... (${sec}초 경과) \n🔍 자식 키워드: ${childKeywords.join(", ")}'`;
+    }
+  }, 1000);
+
 
   fetch("http://localhost:5000/expand", {
     method: "POST",
@@ -27,6 +32,7 @@ function startExpandCrawlingAndRender(keyword) {
   })
     .then(res => res.json())
     .then(json => {
+      clearInterval(timer);
       if (json.error) {
         console.error("확장 크롤링 오류:", json.error);
         return;
@@ -51,11 +57,14 @@ function startExpandCrawlingAndRender(keyword) {
 
       renderMap(keyword, expandedData);
 
-      if (output) {
-        output.remove();  // 시각화 끝났으면 제거
-      }
+      // 총 소요초 계산·로깅
+       const totalSec = Math.floor((Date.now() - startTime) / 1000);
+       console.log(totalSec, "초 소요🗿🗿");
+       output.remove();    // ▶ 출력 제거
+      
     })
     .catch(err => {
+      clearInterval(timer);    // ▶ 에러 시에도 타이머 중단
       console.error("서버 요청 실패:", err);
     });
 }
