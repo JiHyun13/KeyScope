@@ -50,17 +50,16 @@ Through **NLP-based keyword extraction**, **news APIs**, and a **visualized UI**
 ### 🔧 Backend
 - Python, Flask
 - NAVER News API
-- GPT API / Cohere / Claude (for NLP tasks)
+- KeyBERT / T5 model (for NLP tasks)
 
 ### 🎨 Frontend
 - Figma (UI/UX flow & design)
+- https://www.figma.com/design/NxqJyJoa7WmnAaHj7tgzGp/%EC%9B%B9-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EA%B8%B0%ED%9A%8D?node-id=0-1&t=QFcCBkoDl8SF6HlK-1
 - HTML, CSS, JavaScript
 
 ### 🧠 AI Features
-- **Keyword Extraction**: GPT API or alternatives
-- **News Summarization**: GPT API or summarization model
-- **Clustering & Categorization**: NLP model to identify stance and similarity
-
+- **Keyword Extraction**: KeyBERT model 
+- **News Summarization**: T5 model
 ---
 
 ## 🎯 Relevance & Goals
